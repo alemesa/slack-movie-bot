@@ -27,15 +27,17 @@ app.post('/', (req, res) => {
   // if next or previous
   let text = req.body.text;
   if (text == '') {
+    //let image =
+    //('https://images-na.ssl-images-amazon.com/images/M/MV5BOGJjNzZmMmUtMjljNC00ZjU5LWJiODQtZmEzZTU0MjBlNzgxL2ltYWdlXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_UY1200_CR90,0,630,1200_AL_.jpg');
     let image =
-      'https://images-na.ssl-images-amazon.com/images/M/MV5BOGJjNzZmMmUtMjljNC00ZjU5LWJiODQtZmEzZTU0MjBlNzgxL2ltYWdlXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_UY1200_CR90,0,630,1200_AL_.jpg';
+      'http://www.discoveryourtalent.co.uk/wp-content/uploads/2015/06/SA21.jpg';
 
     let data = {
       response_type: 'in_channel', // public to the channle
       text: 'Spirited Away (2001) - Hayao Miyasaki - Tuesday 14 November',
       attachments: [
         {
-          pretext: 'Poster by @steven',
+          pretext: 'Poster by <@steven> / Join <#|movie-night> for more info',
           color: '#231F20',
           image_url: image,
           footer: 'Ocean (3rd Room Couch & TV) 6:30-9pm'
@@ -47,7 +49,7 @@ app.post('/', (req, res) => {
     let data = {
       response_type: 'in_channel', // public to the channle
       text:
-        'Alien (1979) - Ridley Scott - Tuesday 17 October\nBlade Runner (1982) - Ridley Scott - Tuesday 3 October',
+        'Alien (1979)        - Ridley Scott - Tuesday 17 October\nBlade Runner (1982) - Ridley Scott - Tuesday 3 October\n\nType `/movie` for upcoming movies',
       attachments: [
         {
           color: '#231F20'
@@ -58,7 +60,7 @@ app.post('/', (req, res) => {
   } else {
     let data = {
       response_type: 'ephemeral', // public to the channle
-      text: "You're doing it wrong either type /movie or /movie previous"
+      text: "You're doing it wrong either type `/movie` or `/movie previous`"
     };
     res.json(data);
   }
