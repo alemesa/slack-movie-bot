@@ -35,10 +35,10 @@ app.post('/', (req, res) => {
     text: 'Spirited Away (2001) - Hayao Miyasaki - Tuesday 14 November',
     attachments: [
       {
-        color: '#F44336',
-        pretext: 'Spirited Away (2001) - Hayao Miyasaki - Tuesday 14 November',
+        pretext: 'Poster by ....',
+        color: '#231F20',
         image_url: image,
-        footer: 'Movies!!!'
+        footer: 'Movie - Night'
       }
     ]
   };
