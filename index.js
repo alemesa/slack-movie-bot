@@ -62,7 +62,8 @@ app.post('/', (req, res) => {
   } else {
     let data = {
       response_type: 'ephemeral', // public to the channle
-      text: "You're doing it wrong either type `/movie` or `/movie previous`"
+      text:
+        ":x: You're doing it wrong either type `/movie` or `/movie previous`"
     };
     res.json(data);
   }
