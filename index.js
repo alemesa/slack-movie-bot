@@ -34,10 +34,12 @@ app.post('/', (req, res) => {
 
     let data = {
       response_type: 'in_channel', // public to the channle
-      text: 'Spirited Away (2001) - Hayao Miyasaki - Tuesday 14 November',
+      // Tuesday 14 November
+      text:
+        'Spirited Away (2001) - Hayao Miyasaki - <!date^1510702200^{date_long}>',
       attachments: [
         {
-          pretext: 'Poster by <@steven> / Join <#|movie-night> for more info',
+          pretext: 'Poster by <@U1WJY2UQP> / Join <#movie-night> for more info',
           color: '#231F20',
           image_url: image,
           footer: 'Ocean (3rd Room Couch & TV) 6:30-9pm'
@@ -49,7 +51,7 @@ app.post('/', (req, res) => {
     let data = {
       response_type: 'in_channel', // public to the channle
       text:
-        'Alien (1979)        - Ridley Scott - Tuesday 17 October\nBlade Runner (1982) - Ridley Scott - Tuesday 3 October\n\nType `/movie` for upcoming movies',
+        'Alien (1979) - Ridley Scott - Tuesday 17 October\nBlade Runner (1982) - Ridley Scott - Tuesday 3 October\n\nType `/movie` for upcoming movies',
       attachments: [
         {
           color: '#231F20'
