@@ -30,8 +30,7 @@ const server = app.listen(process.env.PORT || 3000, () => {
 });
 
 function getNextMovie() {
-  let image =
-    'http://www.discoveryourtalent.co.uk/wp-content/uploads/2015/06/SA21.jpg';
+  let image = `${movies.poster}`;
 
   let data = {
     response_type: 'in_channel',

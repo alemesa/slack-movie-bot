@@ -9,7 +9,36 @@
 </head>
 
 <body>
-    <h1>API</h1>
+    <h1>Movie Slack Bot API</h1>
+    <!-- <div class="grid">
+        <div class="grid-sizer">
+            <div class="grid-item">
+                <img src="./images/blade-runner.jpg">
+            </div>
+            <div class="grid-item">
+                <img src="./images/alien.jpg">
+            </div>
+            <div class="grid-item">
+                <img src="./images/the-thing.png">
+            </div>
+        </div>
+    </div> -->
 </body>
+<script src="https://masonry.desandro.com/masonry.pkgd.js"></script>
+<script src="https://imagesloaded.desandro.com/imagesloaded.pkgd.js"></script>
+<script>
+    var grid = document.querySelector('.grid');
+
+    var msnry = new Masonry(grid, {
+        itemSelector: '.grid-item',
+        columnWidth: '.grid-sizer',
+        percentPosition: true
+    });
+
+    imagesLoaded(grid).on('progress', function () {
+        // layout Masonry after each image loads
+        msnry.layout();
+    });
+</script>
 
 </html>
