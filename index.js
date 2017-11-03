@@ -2,8 +2,22 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const tools = require('./util/util');
+const fs = require('fs');
+const moment = require('moment');
+
+// Getting local JSON Data
+let movies = JSON.parse(fs.readFileSync('./data/movies.json'));
+let variables = JSON.parse(fs.readFileSync('./data/vars.json'));
+
+// define movies
+let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
+let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
+let nextMovie = futureMovies[0];
 
 const app = express();
+
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -15,55 +29,94 @@ const server = app.listen(process.env.PORT || 3000, () => {
   );
 });
 
-/* *******************************
-/* Next Movie Slash Command
-/* ***************************** */
+function getNextMovie() {
+  let image =
+    'http://www.discoveryourtalent.co.uk/wp-content/uploads/2015/06/SA21.jpg';
+
+  let data = {
+    response_type: 'in_channel',
+    text: `${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
+      nextMovie.date
+    ).format('ddd, Do MMMM')}`,
+    attachments: [
+      {
+        pretext: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
+        color: `${variables.color}`,
+        image_url: movies.poster,
+        footer: `${variables.location} - ${variables.time}`
+      }
+    ]
+  };
+
+  return data;
+}
+
+function getPreviousMovies() {
+  let text = '';
+  pastMovies.reverse().map(movie => {
+    text += `${movie.name} (${movie.year}) - ${movie.director} - ${moment(
+      movie.date
+    ).format('ddd, Do MMMM')}\n`;
+  });
+
+  let data = {
+    response_type: 'in_channel', // public to the channel
+    text: `${text}${variables.suggestion}`,
+    attachments: [
+      {
+        color: `${variables.color}`
+      }
+    ]
+  };
+
+  return data;
+}
+
+function getFutureMovies() {
+  let text = '';
+  futureMovies.map(movie => {
+    text += `${movie.name} (${movie.year}) - ${movie.director} - ${moment(
+      movie.date
+    ).format('ddd, Do MMMM')}\n`;
+  });
+
+  let data = {
+    response_type: 'in_channel', // public to the channel
+    text: `${text}${variables.suggestion}`,
+    attachments: [
+      {
+        color: `${variables.color}`
+      }
+    ]
+  };
+
+  return data;
+}
+
+function displayError() {
+  let data = {
+    response_type: 'ephemeral', // public to the channle
+    text: `${variables.warning}`
+  };
+  return data;
+}
 
 app.get('/', (req, res) => {
-  console.log('working');
+  console.log('Get Working');
 });
 
 app.post('/', (req, res) => {
-  // if next or previous
+  // if next or previous or future
   let text = req.body.text;
-  if (text == '') {
-    //let image =
-    //('https://images-na.ssl-images-amazon.com/images/M/MV5BOGJjNzZmMmUtMjljNC00ZjU5LWJiODQtZmEzZTU0MjBlNzgxL2ltYWdlXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_UY1200_CR90,0,630,1200_AL_.jpg');
-    let image =
-      'http://www.discoveryourtalent.co.uk/wp-content/uploads/2015/06/SA21.jpg';
 
-    let data = {
-      response_type: 'in_channel', // public to the channle
-      // <!date^1510702200^{date_long}>
-      text: 'Spirited Away (2001) - Hayao Miyasaki - Tuesday 14 November',
-      attachments: [
-        {
-          pretext: 'Poster by <@U7U2K79RQ> / Join #movie-night for more info',
-          color: '#231F20',
-          image_url: image,
-          footer: 'Ocean (3rd Room Couch & TV) 6:30-9pm'
-        }
-      ]
-    };
-    res.json(data);
+  // possible options
+  if (text == '') {
+    res.json(getNextMovie());
   } else if (text == 'previous') {
-    let data = {
-      response_type: 'in_channel', // public to the channle
-      text:
-        'Alien (1979) - Ridley Scott - Tuesday 17 October\nBlade Runner (1982) - Ridley Scott - Tuesday 3 October\n\nType `/movie` for upcoming movies',
-      attachments: [
-        {
-          color: '#231F20'
-        }
-      ]
-    };
-    res.json(data);
+    res.json(getPreviousMovies());
+  } else if (text == 'future') {
+    res.json(getFutureMovies());
   } else {
-    let data = {
-      response_type: 'ephemeral', // public to the channle
-      text:
-        ":x: You're doing it wrong either type `/movie` or `/movie previous`"
-    };
-    res.json(data);
+    res.json(displayError());
   }
 });

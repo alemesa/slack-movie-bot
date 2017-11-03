@@ -1,0 +1,8 @@
+{
+  "color": "#231F20",
+  "location": "Ocean (3rd Room Couch & TV)",
+  "time": "6:30 - 9:00pm",
+  "suggestion": "Type `/movie` for upcoming movies",
+  "warning":
+    ":x: You're doing it wrong either type `/movie` or `/movie previous`"
+}
