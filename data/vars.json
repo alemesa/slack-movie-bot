@@ -4,5 +4,5 @@
   "time": "6:30 - 9:00pm",
   "suggestion": "Type `/movie` to check out the upcoming movie",
   "warning":
-    ":x: You're doing it wrong either type `/movie` or `/movie previous`"
+    ":x: You're doing it wrong either type `/movie` or `/movie previous` or `/movie future`"
 }
