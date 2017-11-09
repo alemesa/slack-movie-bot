@@ -3,6 +3,7 @@ const router = express.Router();
 const fetch = require('node-fetch');
 const fs = require('fs');
 const moment = require('moment');
+const TOKEN = '4Xnfaf6wEsWftMP5puPSKFiF';
 
 // Getting local JSON Data
 let movies = JSON.parse(fs.readFileSync('./data/movies.json'));
@@ -94,21 +95,78 @@ router.get('/api/movies', (req, res) => {
   res.send(movies);
 });
 
-// Slack functionality
-router.post('/', (req, res) => {
-  // if next or previous or future
-  let text = req.body.text;
-
-  // possible options
-  if (text == '') {
-    res.json(getNextMovie());
-  } else if (text == 'previous') {
-    res.json(getPreviousMovies());
-  } else if (text == 'future') {
-    res.json(getFutureMovies());
+// Slack buttons functionality
+router.post('/', urlencodedParser, (req, res) => {
+  res.status(200).end(); // best practice to respond with empty 200 status code
+  var reqBody = req.body;
+  var responseURL = reqBody.response_url;
+  if (reqBody.token != TOKEN) {
+    res.status(403).end('Access forbidden');
   } else {
-    res.json(displayError());
+    var message = {
+      text: 'This is your first interactive message',
+      attachments: [
+        {
+          text: 'Building buttons is easy right?',
+          fallback: "Shame... buttons aren't supported in this land",
+          callback_id: 'button_tutorial',
+          color: '#3AA3E3',
+          attachment_type: 'default',
+          actions: [
+            {
+              name: 'yes',
+              text: 'yes',
+              type: 'button',
+              value: 'yes'
+            },
+            {
+              name: 'no',
+              text: 'no',
+              type: 'button',
+              value: 'no'
+            },
+            {
+              name: 'maybe',
+              text: 'maybe',
+              type: 'button',
+              value: 'maybe',
+              style: 'danger'
+            }
+          ]
+        }
+      ]
+    };
+    sendMessageToSlackResponseURL(responseURL, message);
   }
+});
+
+function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
+  var postOptions = {
+    uri: responseURL,
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    json: JSONmessage
+  };
+  request(postOptions, (error, response, body) => {
+    if (error) {
+      // handle errors as you see fit
+    }
+  });
+}
+
+router.post('/slack/actions', urlencodedParser, (req, res) => {
+  res.status(200).end(); // best practice to respond with 200 status
+  var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
+  var message = {
+    text:
+      actionJSONPayload.user.name +
+      ' clicked: ' +
+      actionJSONPayload.actions[0].name,
+    replace_original: false
+  };
+  sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
 });
 
 module.exports = router;
