@@ -3,7 +3,10 @@ const router = express.Router();
 const fetch = require('node-fetch');
 const fs = require('fs');
 const moment = require('moment');
+const request = require('request');
+const bodyParser = require('body-parser');
 const TOKEN = '4Xnfaf6wEsWftMP5puPSKFiF';
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 // Getting local JSON Data
 let movies = JSON.parse(fs.readFileSync('./data/movies.json'));
