@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const fetch = require('node-fetch');
-const fs = require('fs');
-const moment = require('moment');
 const request = require('request');
 const bodyParser = require('body-parser');
-const TOKEN = '4Xnfaf6wEsWftMP5puPSKFiF';
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
+// date handling
+const fs = require('fs');
+const moment = require('moment');
+// secret
+const TOKEN = '4Xnfaf6wEsWftMP5puPSKFiF';
 
 // Getting local JSON Data
 let movies = JSON.parse(fs.readFileSync('./data/movies.json'));
@@ -98,67 +100,28 @@ router.get('/api/movies', (req, res) => {
   res.send(movies);
 });
 
-// Slack buttons functionality
+// Handle POST request form '/movie' slash command
 router.post('/', urlencodedParser, (req, res) => {
+  console.log('post received, processing request');
   res.status(200).end(); // best practice to respond with empty 200 status code
   var reqBody = req.body;
   var responseURL = reqBody.response_url;
-  if (reqBody.token != TOKEN) {
-    res.status(403).end('Access forbidden');
-  } else {
-    var message = {
-      text: 'This is your first interactive message',
-      attachments: [
-        {
-          text: 'Building buttons is easy right?',
-          fallback: "Shame... buttons aren't supported in this land",
-          callback_id: 'button_tutorial',
-          color: '#3AA3E3',
-          attachment_type: 'default',
-          actions: [
-            {
-              name: 'yes',
-              text: 'yes',
-              type: 'button',
-              value: 'yes'
-            },
-            {
-              name: 'no',
-              text: 'no',
-              type: 'button',
-              value: 'no'
-            },
-            {
-              name: 'maybe',
-              text: 'maybe',
-              type: 'button',
-              value: 'maybe',
-              style: 'danger'
-            }
-          ]
-        }
-      ]
-    };
+  // if (reqBody.token != TOKEN) {
+  //   res.status(403).end('Access forbidden');
+  // }
+  if (reqBody.text == '') {
+    let message = getNextMovie();
+    sendMessageToSlackResponseURL(responseURL, message);
+  } else if (reqBody.text == 'previous') {
+    let message = getPreviousMovies();
+    sendMessageToSlackResponseURL(responseURL, message);
+  } else if (reqBody.text == 'future') {
+    let message = getFutureMovies();
     sendMessageToSlackResponseURL(responseURL, message);
   }
 });
 
-function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
-  var postOptions = {
-    uri: responseURL,
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
-    json: JSONmessage
-  };
-  request(postOptions, (error, response, body) => {
-    if (error) {
-      // handle errors as you see fit
-    }
-  });
-}
-
+// Handle POST Requests by buttons
 router.post('/slack/actions', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with 200 status
   var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
@@ -171,5 +134,22 @@ router.post('/slack/actions', urlencodedParser, (req, res) => {
   };
   sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
 });
+
+// Slack Functionality
+function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
+  var postOptions = {
+    uri: responseURL,
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    json: JSONmessage
+  };
+  request(postOptions, (error, response, body) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+}
 
 module.exports = router;
