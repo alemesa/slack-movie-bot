@@ -19,9 +19,14 @@ let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 
+// api stuff
+
 function getInfo(movie) {
-  let text,
-    poster = '';
+  let text = '';
+  let poster = '';
+
+  const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
+  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
 
   return fetch(searchQuery)
     .then(res => res.json())
