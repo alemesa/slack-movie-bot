@@ -196,10 +196,11 @@ router.post('/actions', urlencodedParser, (req, res) => {
 
   if (actionJSONPayload.actions[0].name == 'previous') {
     let message = getPreviousMovies();
+    sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (actionJSONPayload.actions[0].name == 'future') {
     let message = getFutureMovies();
+    sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   }
-  sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
 });
 
 // Slack Functionality
