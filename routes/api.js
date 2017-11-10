@@ -94,7 +94,7 @@ function fetchMovie(movie) {
 
   let data = {
     response_type: 'in_channel', // public to the channel
-    text: `${text}`,
+    text: `Title: ${text}`,
     attachments: [
       {
         color: `${variables.color}`,
@@ -102,6 +102,7 @@ function fetchMovie(movie) {
       }
     ]
   };
+  console.log(data);
 
   return data;
 }
