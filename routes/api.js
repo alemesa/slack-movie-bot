@@ -66,6 +66,42 @@ function getPreviousMovies() {
   return data;
 }
 
+function fetchMovie(movie) {
+  let text = '';
+  let poster = '';
+
+  const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
+  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
+
+  console.log('fetching');
+
+  fetch(searchQuery)
+    .then(res => res.json())
+    .then(json => json.results[0])
+    .then(movie => {
+      console.log(movie);
+      if (movie) {
+        text = `${movie.original_title} - ${movie.release.date}`;
+        poster = movie.poster_path;
+      } else if (!json.results[0]) {
+        text = 'No results found';
+      }
+    });
+
+  let data = {
+    response_type: 'in_channel', // public to the channel
+    text: `${text}`,
+    attachments: [
+      {
+        color: `${variables.color}`,
+        image_url: poster
+      }
+    ]
+  };
+
+  return data;
+}
+
 function getFutureMovies() {
   let text = '';
   futureMovies.map(movie => {
@@ -122,7 +158,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getFutureMovies();
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
-    console.log(reqBody.text);
+    let message = fetchMovie(reqBody.text);
     sendMessageToSlackResponseURL(responseURL, reqBody.text);
   }
 });
