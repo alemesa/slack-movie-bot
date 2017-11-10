@@ -106,6 +106,9 @@ router.post('/', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with empty 200 status code
   var reqBody = req.body;
   var responseURL = reqBody.response_url;
+  if (req.body) {
+    console.log('exists');
+  }
   // if (reqBody.token != TOKEN) {
   //   res.status(403).end('Access forbidden');
   // }
