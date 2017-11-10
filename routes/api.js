@@ -32,7 +32,21 @@ function getNextMovie() {
         pretext: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
         color: `${variables.color}`,
         image_url: movies.poster,
-        footer: `${variables.location} - ${variables.time}`
+        footer: `${variables.location} - ${variables.time}`,
+        actions: [
+          {
+            name: 'previous',
+            text: 'Previous Movies',
+            type: 'button',
+            value: 'previous'
+          },
+          {
+            name: 'future',
+            text: 'Future Movies',
+            type: 'button',
+            value: 'future'
+          }
+        ]
       }
     ]
   };
@@ -91,21 +105,21 @@ function fetchMovie(movie) {
         text = 'No results found';
       }
     })
-    .then(movie => {
-      let data = {
-        response_type: 'in_channel', // public to the channel
-        text: `Title: ${text}`,
-        attachments: [
-          {
-            color: `${variables.color}`,
-            image_url: poster
-          }
-        ]
-      };
-      console.log(data);
+    .catch(err => console.log(err));
 
-      return data;
-    });
+  let data = {
+    response_type: 'in_channel', // public to the channel
+    text: `Title: ${text}`,
+    attachments: [
+      {
+        color: `${variables.color}`,
+        image_url: poster
+      }
+    ]
+  };
+  console.log(data);
+
+  return data;
 }
 
 function getFutureMovies() {
@@ -174,13 +188,13 @@ router.post('/movie', urlencodedParser, (req, res) => {
 router.post('/actions', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with 200 status
   var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
-  var message = {
-    text:
-      actionJSONPayload.user.name +
-      ' clicked: ' +
-      actionJSONPayload.actions[0].name,
-    replace_original: false
-  };
+
+  if (actionJSONPayload.actions[0].name == 'previous') {
+    let message = getPreviousMovies();
+  } else if (actionJSONPayload.actions[1].name == 'future') {
+    let message = getFutureMovies();
+  }
+
   sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
 });
 
