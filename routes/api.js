@@ -82,7 +82,15 @@ function fetchMovie(movie) {
       console.log(movie);
       if (movie) {
         text = `${movie.original_title} - ${movie.release_date}`;
-        poster = movie.poster_path;
+        if (movie.poster_path != 'N/A') {
+          poster = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+        } else {
+          poster = './placeholder.jpg';
+        }
+
+        if (app.url == 'N/A') {
+          app.url = './images/placeholder.jpg';
+        }
       } else if (!json.results[0]) {
         text = 'No results found';
       }
