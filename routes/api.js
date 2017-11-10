@@ -121,11 +121,14 @@ router.post('/movie', urlencodedParser, (req, res) => {
   } else if (reqBody.text == 'future') {
     let message = getFutureMovies();
     sendMessageToSlackResponseURL(responseURL, message);
+  } else {
+    console.log(reqBody.text);
+    sendMessageToSlackResponseURL(responseURL, reqBody.text);
   }
 });
 
 // Handle POST Requests by buttons
-router.post('/slack/actions', urlencodedParser, (req, res) => {
+router.post('/actions', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with 200 status
   var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
   var message = {
