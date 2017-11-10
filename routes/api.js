@@ -81,7 +81,7 @@ function fetchMovie(movie) {
     .then(movie => {
       console.log(movie);
       if (movie) {
-        text = `${movie.original_title} - ${movie.release.date}`;
+        text = `${movie.original_title} - ${movie.release_date}`;
         poster = movie.poster_path;
       } else if (!json.results[0]) {
         text = 'No results found';
