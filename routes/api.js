@@ -19,6 +19,53 @@ let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 
+function fetchMovie(movie) {
+  let text = '';
+  let poster = '';
+  let data = {};
+
+  const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
+  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
+
+  console.log('fetching');
+
+  fetch(searchQuery)
+    .then(res => res.json())
+    .then(json => json.results[0])
+    .then(movie => {
+      console.log(movie);
+      if (movie) {
+        text = `${movie.original_title} - ${movie.release_date}`;
+        if (movie.poster_path != 'N/A') {
+          poster = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+        } else {
+          poster = './placeholder.jpg';
+        }
+      } else if (!json.results[0]) {
+        text = 'No results found';
+      }
+    })
+    .then(buildAndReturn)
+    .catch(err => console.log(err));
+
+  function buildAndReturn() {
+    data = {
+      response_type: 'in_channel', // public to the channel
+      text: `Title: ${text}`,
+      attachments: [
+        {
+          callback_id: 'search',
+          color: `${variables.color}`,
+          image_url: poster
+        }
+      ]
+    };
+    console.log(data);
+
+    return data;
+  }
+}
+
 function getNextMovie() {
   let image = `${movies.poster}`;
 
@@ -46,6 +93,12 @@ function getNextMovie() {
             text: 'Future Movies',
             type: 'button',
             value: 'future'
+          },
+          {
+            name: `info`,
+            text: 'More Info',
+            type: 'button',
+            value: `${nextMovie.name}`
           }
         ]
       }
@@ -78,49 +131,6 @@ function getPreviousMovies() {
       }
     ]
   };
-
-  return data;
-}
-
-function fetchMovie(movie) {
-  let text = '';
-  let poster = '';
-
-  const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
-  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
-
-  console.log('fetching');
-
-  fetch(searchQuery)
-    .then(res => res.json())
-    .then(json => json.results[0])
-    .then(movie => {
-      console.log(movie);
-      if (movie) {
-        text = `${movie.original_title} - ${movie.release_date}`;
-        if (movie.poster_path != 'N/A') {
-          poster = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-        } else {
-          poster = './placeholder.jpg';
-        }
-      } else if (!json.results[0]) {
-        text = 'No results found';
-      }
-    })
-    .catch(err => console.log(err));
-
-  let data = {
-    response_type: 'in_channel', // public to the channel
-    text: `Title: ${text}`,
-    attachments: [
-      {
-        callback_id: 'search',
-        color: `${variables.color}`,
-        image_url: poster
-      }
-    ]
-  };
-  console.log(data);
 
   return data;
 }
@@ -199,6 +209,9 @@ router.post('/actions', urlencodedParser, (req, res) => {
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (actionJSONPayload.actions[0].name == 'future') {
     let message = getFutureMovies();
+    sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
+  } else if (actionJSONPayload.actions[0].name == 'info') {
+    let message = 'find more info here';
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   }
 });
