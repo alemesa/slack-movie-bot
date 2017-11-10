@@ -19,14 +19,9 @@ let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 
-function fetchMovie(movie) {
-  let text = '';
-  let poster = '';
-
+let goFetchMovie = movie => {
   const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
-
-  console.log('fetching');
 
   fetch(searchQuery)
     .then(res => res.json())
@@ -43,35 +38,50 @@ function fetchMovie(movie) {
       } else if (!movie) {
         text = 'No results found';
       }
+
+      return [text, poster];
     })
     .catch(err => console.log(err));
+};
 
-  let data = {
-    response_type: 'in_channel', // public to the channel
-    text: `Title: Star Wars - 2002`,
-    //text: `${text}`,
-    attachments: [
-      {
-        callback_id: 'search',
-        color: `${variables.color}`,
-        //image_url: poster,
-        image_url:
-          'http://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
-        actions: [
-          {
-            name: 'post',
-            text: 'Post Public',
-            type: 'button',
-            value: 'post'
-          }
-        ]
-      }
-    ]
-  };
+function fetchMovie(movie) {
+  let text = '';
+  let poster = '';
 
-  console.log(data);
+  console.log("let's go find a movie");
 
-  return data;
+  Promise(goFetchMovie(movie)).then(data => {
+    text = data.text;
+    poster = data.poster;
+
+    let message = {
+      response_type: 'in_channel', // public to the channel
+      text: `Title: Star Wars - 2002`,
+      //text: `${text}`,
+      attachments: [
+        {
+          callback_id: 'search',
+          color: `${variables.color}`,
+          //image_url: poster,
+          image_url:
+            'http://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
+          actions: [
+            {
+              name: 'post',
+              text: 'Post Public',
+              type: 'button',
+              value: 'post'
+            }
+          ]
+        }
+      ]
+    };
+
+    console.log(message);
+    return message;
+  });
+
+  console.log('fetching');
 }
 
 function getNextMovie() {
@@ -200,8 +210,9 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getFutureMovies();
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
-    console.log("let's search for a movie");
+    console.log(`let's search for a movie => ${reqBody.text}`);
     let message = fetchMovie(reqBody.text);
+    console.log(message + 'Being posted');
     sendMessageToSlackResponseURL(responseURL, message);
   }
 });
@@ -219,6 +230,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
     let message = getFutureMovies();
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (actionJSONPayload.actions[0].name == 'info') {
+    // start a function that reuses fetch and returns info about that movie
     let message = 'find more info here';
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   }
