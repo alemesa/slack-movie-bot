@@ -19,69 +19,48 @@ let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 
-let goFetchMovie = movie => {
-  const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
-  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
+function getInfo(movie) {
+  let text,
+    poster = '';
 
-  fetch(searchQuery)
+  return fetch(searchQuery)
     .then(res => res.json())
     .then(json => json.results[0])
     .then(movie => {
       console.log(movie);
-      if (movie) {
-        text = `${movie.original_title} - ${movie.release_date}`;
-        if (movie.poster_path != 'N/A') {
-          poster = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-        } else {
-          poster = './placeholder.jpg';
-        }
-      } else if (!movie) {
-        text = 'No results found';
-      }
-
-      return [text, poster];
+      return [
+        (text = `${movie.original_title} - ${movie.release_date}`),
+        (poster = `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
+      ];
     })
     .catch(err => console.log(err));
-};
+}
 
 function fetchMovie(movie) {
-  let text = '';
-  let poster = '';
-
-  console.log("let's go find a movie");
-
-  Promise(goFetchMovie(movie)).then(data => {
-    text = data.text;
-    poster = data.poster;
-
-    let message = {
+  getInfo(movie).then(res => {
+    let data = {
       response_type: 'in_channel', // public to the channel
-      text: `Title: Star Wars - 2002`,
-      //text: `${text}`,
+      text: `${res[0]}`,
       attachments: [
         {
           callback_id: 'search',
           color: `${variables.color}`,
-          //image_url: poster,
-          image_url:
-            'http://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
+          image_url: `${res[1]}`,
           actions: [
             {
               name: 'post',
               text: 'Post Public',
               type: 'button',
-              value: 'post'
+              value: 'post',
+              style: 'danger'
             }
           ]
         }
       ]
     };
-
-    console.log(message);
-    return message;
+    console.log(data);
+    return data;
   });
-
-  console.log('fetching');
 }
 
 function getNextMovie() {
