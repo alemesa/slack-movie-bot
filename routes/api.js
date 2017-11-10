@@ -41,7 +41,7 @@ function fetchMovie(movie) {
         } else {
           poster = './placeholder.jpg';
         }
-      } else if (!json.results[0]) {
+      } else if (!movie) {
         text = 'No results found';
       }
     })
@@ -56,7 +56,15 @@ function fetchMovie(movie) {
         {
           callback_id: 'search',
           color: `${variables.color}`,
-          image_url: poster
+          image_url: poster,
+          actions: [
+            {
+              name: 'post',
+              text: 'Post Public',
+              type: 'button',
+              value: 'post'
+            }
+          ]
         }
       ]
     };
