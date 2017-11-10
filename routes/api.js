@@ -113,8 +113,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
   //   res.status(403).end('Access forbidden');
   // }
   if (reqBody.text == '') {
-    //let message = getNextMovie();
-    let message = 'debugging';
+    let message = getNextMovie();
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (reqBody.text == 'previous') {
     let message = getPreviousMovies();
