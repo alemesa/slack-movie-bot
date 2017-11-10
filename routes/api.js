@@ -162,8 +162,9 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getFutureMovies();
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
+    console.log("let's search for a movie");
     let message = fetchMovie(reqBody.text);
-    sendMessageToSlackResponseURL(responseURL, reqBody.text);
+    sendMessageToSlackResponseURL(responseURL, message);
   }
 });
 
