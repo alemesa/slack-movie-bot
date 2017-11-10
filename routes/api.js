@@ -90,21 +90,22 @@ function fetchMovie(movie) {
       } else if (!json.results[0]) {
         text = 'No results found';
       }
+    })
+    .then(movie => {
+      let data = {
+        response_type: 'in_channel', // public to the channel
+        text: `Title: ${text}`,
+        attachments: [
+          {
+            color: `${variables.color}`,
+            image_url: poster
+          }
+        ]
+      };
+      console.log(data);
+
+      return data;
     });
-
-  let data = {
-    response_type: 'in_channel', // public to the channel
-    text: `Title: ${text}`,
-    attachments: [
-      {
-        color: `${variables.color}`,
-        image_url: poster
-      }
-    ]
-  };
-  console.log(data);
-
-  return data;
 }
 
 function getFutureMovies() {
