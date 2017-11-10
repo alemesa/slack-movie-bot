@@ -45,33 +45,34 @@ function fetchMovie(movie) {
         text = 'No results found';
       }
     })
-    .then(buildAndReturn)
     .catch(err => console.log(err));
 
-  function buildAndReturn() {
-    data = {
-      response_type: 'in_channel', // public to the channel
-      text: `Title: Gladiator - 2002${text}`,
-      attachments: [
-        {
-          callback_id: 'search',
-          color: `${variables.color}`,
-          image_url: poster,
-          actions: [
-            {
-              name: 'post',
-              text: 'Post Public',
-              type: 'button',
-              value: 'post'
-            }
-          ]
-        }
-      ]
-    };
-    console.log(data);
+  data = {
+    response_type: 'in_channel', // public to the channel
+    text: `Title: Star Wars - 2002`,
+    //text: `${text}`,
+    attachments: [
+      {
+        callback_id: 'search',
+        color: `${variables.color}`,
+        //image_url: poster,
+        image_url:
+          'https://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
+        actions: [
+          {
+            name: 'post',
+            text: 'Post Public',
+            type: 'button',
+            value: 'post'
+          }
+        ]
+      }
+    ]
+  };
 
-    return data;
-  }
+  console.log(data);
+
+  return data;
 }
 
 function getNextMovie() {
