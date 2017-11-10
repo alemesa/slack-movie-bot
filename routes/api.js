@@ -87,10 +87,6 @@ function fetchMovie(movie) {
         } else {
           poster = './placeholder.jpg';
         }
-
-        if (app.url == 'N/A') {
-          app.url = './images/placeholder.jpg';
-        }
       } else if (!json.results[0]) {
         text = 'No results found';
       }
