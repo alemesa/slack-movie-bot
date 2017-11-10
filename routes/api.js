@@ -29,6 +29,7 @@ function getNextMovie() {
     ).format('ddd, Do MMMM')}`,
     attachments: [
       {
+        callback_id: 'next',
         pretext: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
         color: `${variables.color}`,
         image_url: movies.poster,
@@ -72,6 +73,7 @@ function getPreviousMovies() {
     text: `${text}${variables.suggestion}`,
     attachments: [
       {
+        callback_id: 'past',
         color: `${variables.color}`
       }
     ]
@@ -112,6 +114,7 @@ function fetchMovie(movie) {
     text: `Title: ${text}`,
     attachments: [
       {
+        callback_id: 'search',
         color: `${variables.color}`,
         image_url: poster
       }
@@ -135,6 +138,7 @@ function getFutureMovies() {
     text: `${text}${variables.suggestion}`,
     attachments: [
       {
+        callback_id: 'future',
         color: `${variables.color}`
       }
     ]
@@ -145,7 +149,7 @@ function getFutureMovies() {
 
 function displayError() {
   let data = {
-    response_type: 'ephemeral', // public to the channle
+    response_type: 'ephemeral', // private to the user
     text: `${variables.warning}`
   };
   return data;
