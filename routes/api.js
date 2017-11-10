@@ -195,9 +195,9 @@ router.post('/movie', urlencodedParser, (req, res) => {
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
     console.log(`let's search for a movie => ${reqBody.text}`);
-    let message = fetchMovie(reqBody.text);
-    console.log(message + 'Being posted');
-    sendMessageToSlackResponseURL(responseURL, message);
+    //let message = fetchMovie(reqBody.text);
+    //console.log(message + 'Being posted');
+    sendMessageToSlackResponseURL(responseURL, fetchMovie(reqBody.text));
   }
 });
 
