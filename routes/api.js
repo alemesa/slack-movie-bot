@@ -101,7 +101,7 @@ router.get('/api/movies', (req, res) => {
 });
 
 // Handle POST request form '/movie' slash command
-router.post('/', urlencodedParser, (req, res) => {
+router.post('/movie', urlencodedParser, (req, res) => {
   console.log('post received, processing request');
   res.status(200).end(); // best practice to respond with empty 200 status code
   var reqBody = req.body;
