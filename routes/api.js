@@ -193,6 +193,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with 200 status
   var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
   console.log(actionJSONPayload);
+
   if (actionJSONPayload.actions[0].name == 'previous') {
     let message = getPreviousMovies();
   } else if (actionJSONPayload.actions[1].name == 'future') {
