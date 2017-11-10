@@ -22,7 +22,6 @@ let nextMovie = futureMovies[0];
 function fetchMovie(movie) {
   let text = '';
   let poster = '';
-  let data = {};
 
   const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
@@ -47,7 +46,7 @@ function fetchMovie(movie) {
     })
     .catch(err => console.log(err));
 
-  data = {
+  let data = {
     response_type: 'in_channel', // public to the channel
     text: `Title: Star Wars - 2002`,
     //text: `${text}`,
@@ -57,7 +56,7 @@ function fetchMovie(movie) {
         color: `${variables.color}`,
         //image_url: poster,
         image_url:
-          'https://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
+          'http://image.tmdb.org/t/p/w500/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg',
         actions: [
           {
             name: 'post',
