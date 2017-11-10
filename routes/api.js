@@ -51,7 +51,7 @@ function fetchMovie(movie) {
   function buildAndReturn() {
     data = {
       response_type: 'in_channel', // public to the channel
-      text: `Title: ${text}`,
+      text: `Title: Gladiator - 2002${text}`,
       attachments: [
         {
           callback_id: 'search',
