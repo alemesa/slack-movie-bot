@@ -24,57 +24,35 @@ function getInfo(movie) {
         (poster = `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
       ];
     })
+    .then(resp => {
+        return {
+            response_type: 'in_channel', // public to the channel
+            text: `${resp[0]}`,
+            attachments: [
+              {
+                callback_id: 'search',
+                color: `${variables.color}`,
+                image_url: `${resp[1]}`,
+                actions: [
+                  {
+                    name: 'post',
+                    text: 'Post Public',
+                    type: 'button',
+                    value: 'post',
+                    style: 'danger'
+                  }
+                ]
+              }
+            ]
+          };
+        }
+    )
     .catch(err => console.log(err));
 }
 
-getInfo(movie).then(res => {
-  let data = {
-    response_type: 'in_channel', // public to the channel
-    text: `${res[0]}`,
-    attachments: [
-      {
-        callback_id: 'search',
-        color: `${variables.color}`,
-        image_url: `${res[1]}`,
-        actions: [
-          {
-            name: 'post',
-            text: 'Post Public',
-            type: 'button',
-            value: 'post',
-            style: 'danger'
-          }
-        ]
-      }
-    ]
-  };
-  console.log(data);
-  return data;
-});
 
-function returnMovie(movie) {
-  let data = {
-    response_type: 'in_channel', // public to the channel
-    text: `Movie `,
-    attachments: [
-      {
-        callback_id: 'search',
-        color: `${variables.color}`,
-        image_url: 'poster',
-        actions: [
-          {
-            name: 'post',
-            text: 'Post Public',
-            type: 'button',
-            value: 'post',
-            style: 'danger'
-          }
-        ]
-      }
-    ]
-  };
 
-  console.log(data.text);
+  console.log(getInfo(movie));
   console.log(data.attachments.image_url);
   return data;
 }

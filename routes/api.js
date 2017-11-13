@@ -43,7 +43,7 @@ function getInfo(movie) {
 
 function fetchMovie(movie) {
   getInfo(movie).then(res => {
-    let data = {
+    return {
       response_type: 'in_channel', // public to the channel
       text: `${res[0]}`,
       attachments: [
@@ -63,8 +63,6 @@ function fetchMovie(movie) {
         }
       ]
     };
-    console.log(data);
-    return data;
   });
 }
 
