@@ -44,7 +44,7 @@ function getInfo(movie) {
 function fetchMovie(movie) {
   getInfo(movie).then(res => {
     return {
-      response_type: 'in_channel', // public to the channel
+      response_type: 'ephemeral', // public to the channel
       text: `${res[0]}`,
       attachments: [
         {
