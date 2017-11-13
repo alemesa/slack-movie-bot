@@ -28,7 +28,7 @@ function formatSearchData(movie) {
   let message = {
     response_type: 'ephemeral',
     replace_original: false,
-    text: `🎥 ${movie.title} - ${movie.release_date} | ${movie.original_language.toUpperCase()} | ${movie.runtime} mins`,
+    text: `🎥  Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -36,7 +36,7 @@ function formatSearchData(movie) {
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         color: `${variables.successColor}`,
         attachment_type: 'default',
-        title: 'IMDB Link',
+        title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
         text: `${movie.tagline}\n${movie.overview}`,
         actions: [
