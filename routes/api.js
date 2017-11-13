@@ -24,7 +24,7 @@ let tempMovie = {};
 function formatSearchData(movie) {
   let message = {
     response_type: 'ephemeral',
-    replace_original: true,
+    replace_original: false,
     text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
@@ -48,7 +48,9 @@ function formatSearchData(movie) {
   };
   tempMovie = message;
   tempMovie.response_type = 'in_channel';
-  tempMovie.actions = [];
+  tempMovie.replace_original = true;
+  tempMovie.attachments.color = `${variables.errorColor}`;
+  tempMovie.actions = '';
   return message;
 }
 
