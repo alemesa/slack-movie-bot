@@ -78,13 +78,16 @@ function formatSearchData(movie, search) {
     tempMovie.replace_original = true;
     tempMovie.attachments.color = `${variables.errorColor}`;
     tempMovie.attachments.actions = '';
+
+    return message;
   } else {
     let message = {
       response_type: 'ephemeral',
       text: `${variables.movieWarning}`
     };
+
+    return message;
   }
-  return message;
 }
 
 // Slack Functionality
