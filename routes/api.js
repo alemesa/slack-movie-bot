@@ -97,6 +97,7 @@ function getRandomMovie(movies) {
 
 // Get movie from search
 function getMovie(movie, random = false) {
+  console.log(movie.original_title + random);
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
   return fetch(searchQuery)
     .then(res => res.json())
