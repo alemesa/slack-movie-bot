@@ -25,10 +25,12 @@ const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
 // Format Search Data
 function formatSearchData(movie) {
+  movie.production_countries.map(country => console.log(country.iso_3166_1));
+
   let message = {
     response_type: 'ephemeral',
     replace_original: false,
-    text: `🎥  Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins`,
+    text: `\tDate: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -42,7 +44,7 @@ function formatSearchData(movie) {
         actions: [
           {
             name: 'post',
-            text: 'Post Public',
+            text: 'Post Public on #movie-night',
             type: 'button',
             value: 'post'
           }
