@@ -25,7 +25,7 @@ let tempSearchTerm = '';
 const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
 // Format Search Data
-function formatSearchData(movie) {
+function formatSearchData(movie, search) {
   let production_countries = '';
   let production_company = movie.production_companies[0].name;
   let genres = '';
@@ -60,7 +60,7 @@ function formatSearchData(movie) {
             name: 'shuffle',
             text: 'Shuffle Movie',
             type: 'button',
-            value: `${movie.title}`
+            value: `${search}`
           }
         ]
       }
@@ -97,20 +97,19 @@ function getRandomMovie(movies) {
 }
 
 // Get movie from search
-function getMovie(movie, random = false) {
-  console.log(movie.original_title + random);
+function getMovie(movie) {
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
   return fetch(searchQuery)
     .then(res => res.json())
     .then(json =>
       fetch(
-        `https://api.themoviedb.org/3/movie/${random
-          ? json.results[getRandomMovie(json.results)].id
-          : json.results[0].id}?api_key=${apiKey}`
+        `https://api.themoviedb.org/3/movie/${json.results[
+          getRandomMovie(json.results)
+        ].id}?api_key=${apiKey}`
       )
     )
     .then(res => res.json())
-    .then(data => formatSearchData(data))
+    .then(data => formatSearchData(data, movie))
     .catch(err => console.log(err));
 }
 
@@ -239,9 +238,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getFutureMovies(); // get future movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
-    let tempSearchTerm = bodyText;
-    console.log(tempSearchTerm);
-    getMovie(tempSearchTerm).then(message => {
+    getMovie(bodyText).then(message => {
       sendMessageToSlackResponseURL(responseURL, message);
     });
   }
@@ -261,11 +258,11 @@ router.post('/actions', urlencodedParser, (req, res) => {
     let message = getFutureMovies();
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (optionName == 'shuffle') {
-    getMovie(tempSearchTerm, true).then(message => {
+    getMovie(optionValue).then(message => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'info') {
-    getMovie(optionValue, false).then(message => {
+    getMovie(optionValue).then(message => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'post') {
