@@ -192,19 +192,21 @@ router.post('/movie', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with empty 200 status code
   var reqBody = req.body;
   var responseURL = reqBody.response_url;
-  console.log(reqBody);
 
   if (reqBody.text == '') {
+    console.log('SLASH COMMAND Getting the Next Movie');
     let message = getNextMovie(); // get next movie according to the calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (reqBody.text == 'previous') {
+    console.log('SLASH COMMAND Getting the Previous Movies');
     let message = getPreviousMovies(); // get previous movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (reqBody.text == 'future') {
+    console.log('SLASH COMMAND Getting the Future Movies');
     let message = getFutureMovies(); // get future movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
-    console.log(`let's search for a movie => ${reqBody.text}`);
+    console.log(`SLASH COMMAND let's search for a movie => ${reqBody.text}`);
     // search for a movie depending on the body text
     getMovie(reqBody.text).then(message => {
       console.log(message);
@@ -219,17 +221,21 @@ router.post('/actions', urlencodedParser, (req, res) => {
   var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
 
   if (actionJSONPayload.actions[0].name == 'previous') {
+    console.log('BUTTON Getting the Previous Movies');
     let message = getPreviousMovies(); // get previous movies according to calendar
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (actionJSONPayload.actions[0].name == 'future') {
+    console.log('BUTTON Getting the Future Movies');
     let message = getFutureMovies(); // get future movie according to calendar
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (actionJSONPayload.actions[0].name == 'info') {
     // get more info about the next movie using the API
     getMovie(actionJSONPayload.actions[0].value).then(message => {
+      console.log('BUTTON Getting Movie Extra Info');
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (actionJSONPayload.actions[0].name == 'post') {
+    console.log('BUTTON Posting Public Clicked');
     // post the current movie
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
   }
