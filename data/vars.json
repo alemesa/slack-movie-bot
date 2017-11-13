@@ -1,5 +1,7 @@
 {
-  "color": "#231F20",
+  "successcolor": "#2196F3",
+  "errorColor": "#f44336",
+  "jam3Color": "#212121",
   "location": "Ocean (3rd Room Couch & TV)",
   "time": "6:30 - 9:00pm",
   "suggestion": "Type `/movie` to check out the upcoming movie",

@@ -24,14 +24,14 @@ function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
 
   let message = {
-    //response_type: 'ephemeral', // private to the channel
+    response_type: 'ephemeral',
     text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
         callback_id: 'search',
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        color: `${variables.color}`,
+        color: `${variables.successColor}`,
         attachment_type: 'default',
         text: `${movie.overview}`,
         actions: [
@@ -65,7 +65,7 @@ function getMovie(movie) {
 function getNextMovie() {
   let image = `${movies.poster}`;
 
-  let data = {
+  let message = {
     response_type: 'in_channel',
     text: `${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
       nextMovie.date
@@ -74,7 +74,7 @@ function getNextMovie() {
       {
         callback_id: 'next',
         pretext: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
-        color: `${variables.color}`,
+        color: `${variables.jam3Color}`,
         image_url: movies.poster,
         footer: `${variables.location} - ${variables.time}`,
         actions: [
@@ -101,7 +101,7 @@ function getNextMovie() {
     ]
   };
 
-  return data;
+  return message;
 }
 
 function getPreviousMovies() {
@@ -117,18 +117,18 @@ function getPreviousMovies() {
       ).format('ddd, Do MMMM')}\n`;
     });
 
-  let data = {
-    response_type: 'in_channel', // public to the channel
+  let message = {
+    response_type: 'in_channel',
     text: `${text}${variables.suggestion}`,
     attachments: [
       {
         callback_id: 'past',
-        color: `${variables.color}`
+        color: `${variables.jam3Color}`
       }
     ]
   };
 
-  return data;
+  return message;
 }
 
 function getFutureMovies() {
@@ -139,26 +139,26 @@ function getFutureMovies() {
     ).format('ddd, Do MMMM')}\n`;
   });
 
-  let data = {
-    response_type: 'in_channel', // public to the channel
+  let message = {
+    response_type: 'in_channel',
     text: `${text}${variables.suggestion}`,
     attachments: [
       {
         callback_id: 'future',
-        color: `${variables.color}`
+        color: `${variables.jam3Color}`
       }
     ]
   };
 
-  return data;
+  return message;
 }
 
 function displayError() {
-  let data = {
-    response_type: 'ephemeral', // private to the user
+  let message = {
+    response_type: 'ephemeral',
     text: `${variables.warning}`
   };
-  return data;
+  return message;
 }
 
 // Return the movies as json (REST-API)
