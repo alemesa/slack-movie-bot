@@ -19,6 +19,7 @@ let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
+let tempSearchTerm = '';
 
 // API stuff
 const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
@@ -115,8 +116,6 @@ function getMovie(movie, random = false) {
 
 // Get next movie from the JSON Calendar
 function getNextMovie() {
-  let image = `${movies.poster}`;
-
   let message = {
     response_type: 'in_channel',
     replace_original: false,
@@ -128,7 +127,7 @@ function getNextMovie() {
         callback_id: 'next',
         text: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
         color: `${variables.jam3Color}`,
-        image_url: movies.poster,
+        image_url: `${movies.poster}`,
         footer: `${variables.location} - ${variables.time}`,
         actions: [
           {
@@ -240,7 +239,8 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getFutureMovies(); // get future movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
-    getMovie(bodyText).then(message => {
+    let tempSearchTerm = bodyText;
+    getMovie(tempSearchTerm).then(message => {
       sendMessageToSlackResponseURL(responseURL, message);
     });
   }
@@ -260,7 +260,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
     let message = getFutureMovies();
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (optionName == 'shuffle') {
-    getMovie(actionJSONPayload.actions[0].value, true).then(message => {
+    getMovie(tempSearchTerm, true).then(message => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'info') {
