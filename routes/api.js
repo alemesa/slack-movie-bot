@@ -240,7 +240,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
     let tempSearchTerm = bodyText;
-    console.log(tempSearchTerm)''
+    console.log(tempSearchTerm);
     getMovie(tempSearchTerm).then(message => {
       sendMessageToSlackResponseURL(responseURL, message);
     });
