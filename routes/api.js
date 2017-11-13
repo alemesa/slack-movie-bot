@@ -214,7 +214,6 @@ router.post('/movie', urlencodedParser, (req, res) => {
     console.log(`SLASH COMMAND let's search for a movie => ${reqBody.text}`);
     // search for a movie depending on the body text
     getMovie(reqBody.text).then(message => {
-      console.log(message);
       sendMessageToSlackResponseURL(responseURL, message);
     });
   }
