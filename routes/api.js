@@ -88,13 +88,14 @@ function getNextMovie() {
 
   let message = {
     response_type: 'in_channel',
+    replace_original: false,
     text: `${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
       nextMovie.date
     ).format('ddd, Do MMMM')}`,
     attachments: [
       {
         callback_id: 'next',
-        pretext: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
+        text: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
         color: `${variables.jam3Color}`,
         image_url: movies.poster,
         footer: `${variables.location} - ${variables.time}`,
@@ -140,9 +141,11 @@ function getPreviousMovies() {
 
   let message = {
     response_type: 'in_channel',
-    text: `${text}${variables.suggestion}`,
+    text: `Previous Movies`,
+    replace_original: false,
     attachments: [
       {
+        text: `${text}${variables.suggestion}`,
         callback_id: 'past',
         color: `${variables.jam3Color}`
       }
@@ -162,9 +165,11 @@ function getFutureMovies() {
 
   let message = {
     response_type: 'in_channel',
-    text: `${text}${variables.suggestion}`,
+    text: `Future Movies`,
+    replace_original: false,
     attachments: [
       {
+        text: `${text}${variables.suggestion}`,
         callback_id: 'future',
         color: `${variables.jam3Color}`
       }
