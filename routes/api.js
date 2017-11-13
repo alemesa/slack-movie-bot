@@ -253,7 +253,11 @@ router.post('/actions', urlencodedParser, (req, res) => {
     console.log('BUTTON Posting Public Clicked');
     // post the current movie
     console.log(tempMovie);
-    sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
+    let movieHook =
+      'https://hooks.slack.com/services/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';
+    console.log('Default Hook => ' + actionJSONPayload.response_url);
+    console.log('Movie Night Hook =>' + movieHook);
+    sendMessageToSlackResponseURL(movieHook, tempMovie);
   }
 });
 
