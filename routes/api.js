@@ -23,18 +23,16 @@ let tempMovie = {};
 function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
 
-  let text = `${movie.original_title} - ${movie.release_date}`;
-  let imageSrc = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-
   let message = {
     response_type: 'ephemeral', // private to the channel
-    text: text,
+    text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
         callback_id: 'search',
-        image_url: imageSrc,
+        image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         color: `${variables.color}`,
         attachment_type: 'default',
+        text: `${movie.overview}`,
         actions: [
           {
             name: 'post',
@@ -208,6 +206,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
   } else if (actionJSONPayload.actions[0].name == 'info') {
     // get more info about the next movie using the API
     getMovie(actionJSONPayload.actions[0].value).then(message => {
+      console.log(message);
       sendMessageToSlackResponseURL(responseURL, message);
     });
   } else if (actionJSONPayload.actions[0].name == 'post') {
