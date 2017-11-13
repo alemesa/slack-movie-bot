@@ -140,7 +140,7 @@ function getPreviousMovies() {
     });
 
   let message = {
-    response_type: 'ephemeral',
+    response_type: 'in_channel',
     text: `Previous Movies`,
     replace_original: false,
     attachments: [
@@ -164,7 +164,7 @@ function getFutureMovies() {
   });
 
   let message = {
-    response_type: 'ephemeral',
+    response_type: 'in_channel',
     text: `Future Movies`,
     replace_original: false,
     attachments: [
@@ -214,6 +214,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     console.log(`SLASH COMMAND let's search for a movie => ${reqBody.text}`);
     // search for a movie depending on the body text
     getMovie(reqBody.text).then(message => {
+      console.log(message);
       sendMessageToSlackResponseURL(responseURL, message);
     });
   }
@@ -236,11 +237,13 @@ router.post('/actions', urlencodedParser, (req, res) => {
     // get more info about the next movie using the API
     getMovie(actionJSONPayload.actions[0].value).then(message => {
       console.log('BUTTON Getting Movie Extra Info');
+      console.log(message);
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (actionJSONPayload.actions[0].name == 'post') {
     console.log('BUTTON Posting Public Clicked');
     // post the current movie
+    console.log(tempMovie);
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
   }
 });
