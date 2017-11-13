@@ -28,6 +28,7 @@ function formatSearchData(movie) {
     text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
+        fallback: 'Unable to search that movie',
         callback_id: 'search',
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         color: `${variables.color}`,
@@ -207,7 +208,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
     // get more info about the next movie using the API
     getMovie(actionJSONPayload.actions[0].value).then(message => {
       console.log(message);
-      sendMessageToSlackResponseURL(responseURL, message);
+      sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (actionJSONPayload.actions[0].name == 'post') {
     // post the current movie
