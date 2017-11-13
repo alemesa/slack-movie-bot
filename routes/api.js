@@ -45,6 +45,7 @@ function formatSearchData(movie) {
       }
     ]
   };
+  console.log(message);
   tempMovie = message;
   tempMovie.response_type = 'in_channel';
   tempMovie.actions = [];

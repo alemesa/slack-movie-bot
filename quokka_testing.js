@@ -1,17 +1,20 @@
 const fetch = require('node-fetch');
+let tempMovie = {};
 
 function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
   console.log(movie.original_title);
-  console.log(movie.release_date);
+  let text = movie.original_title + ' ' + movie.release_date;
+  let imageSrc = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
+  console.log(text, imageSrc);
+
   let message = {
     response_type: 'ephemeral', // private to the channel
-    text: `${movie.original_title} - ${movie.release_date}`,
+    text: text,
     attachments: [
       {
         callback_id: 'search',
-        color: `${variables.color}`,
-        image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+        image_url: imageSrc,
         actions: [
           {
             name: 'post',
@@ -24,12 +27,12 @@ function formatSearchData(movie) {
       }
     ]
   };
-  console.log(message.actions);
+  console.log(message);
   // Keep a temporal variable in case the user want's too post the movie
   tempMovie = message;
   tempMovie.response_type = 'in_channel';
   tempMovie.actions = [];
-  console.log(message);
+  console.log(tempMovie);
   return message;
 }
 
@@ -40,13 +43,7 @@ function getMovie(movie) {
   fetch(searchQuery)
     .then(res => res.json())
     .then(json => {
-      console.log(json.results[0]);
-      console.log(formatSearchData(json.results[0]));
-      json.results[0];
-    })
-    .then(movie => {
-      console.log(movie);
-      formatSearchData(movie);
+      formatSearchData(json.results[0]);
     })
     .catch(err => console.log(err));
 }
