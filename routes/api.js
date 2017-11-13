@@ -114,10 +114,9 @@ function getMovie(movie, popular = true) {
     .then(res => res.json())
     .then(json =>
       fetch(
-        `https://api.themoviedb.org/3/movie/${(json.results[
-          getRandomMovie(json.results)
-        ].id,
-        popular)}?api_key=${apiKey}`
+        `https://api.themoviedb.org/3/movie/${json.results[
+          getRandomMovie(json.results, popular)
+        ].id}?api_key=${apiKey}`
       )
     )
     .then(res => res.json())
