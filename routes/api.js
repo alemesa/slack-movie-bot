@@ -27,13 +27,19 @@ const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 // Format Search Data
 function formatSearchData(movie, search) {
   let production_countries = '';
-  let production_company = movie.production_companies[0].name || '';
+  let production_company = movie.production_companies[0]
+    ? movie.production_companies[0].name
+    : '';
   let genres = '';
 
-  movie.production_countries.map(
-    country => (production_countries += `${country.iso_3166_1 || ''} `)
-  );
-  movie.genres.map(genre => (genres += `${genre.name || ''} `));
+  if (movie.productions_countries) {
+    movie.production_countries.map(
+      country => (production_countries += `${country.iso_3166_1 || ''} `)
+    );
+  }
+  if (movie.genres) {
+    movie.genres.map(genre => (genres += `${genre.name || ''} `));
+  }
 
   let message = {
     response_type: 'ephemeral',
