@@ -18,6 +18,7 @@ let variables = JSON.parse(fs.readFileSync('./data/vars.json'));
 let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
+let tempMovie = {};
 
 // api stuff
 
@@ -35,10 +36,11 @@ let nextMovie = futureMovies[0];
 //     .catch(err => console.log(err));
 // }
 
-function formatSearchData(data) {
+function formatSearchData(movie) {
+  console.log(movie);
   let message = {
     response_type: 'ephemeral', // public to the channel
-    text: `${data[0]}`,
+    text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
         callback_id: 'search',
@@ -56,6 +58,10 @@ function formatSearchData(data) {
       }
     ]
   };
+  // Keep a temporal variable in case the user want's too post the movie
+  tempMovie = message;
+  tempMovie.response_type = 'in_channel';
+  tempMovie.actions = [];
   return message;
 }
 
@@ -65,11 +71,7 @@ function getMovie(movie) {
   fetch(searchQuery)
     .then(res => res.json())
     .then(json => json.results[0])
-    .then(movie => {
-      `${movie.original_title} - ${movie.release_date}`,
-        `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-    })
-    .then(res => formatSearchData(res))
+    .then(movie => formatSearchData(movie))
     .catch(err => console.log(err));
 }
 
@@ -183,24 +185,19 @@ router.post('/movie', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with empty 200 status code
   var reqBody = req.body;
   var responseURL = reqBody.response_url;
-  if (req.body) {
-    console.log('exists');
-  }
-  // if (reqBody.token != TOKEN) {
-  //   res.status(403).end('Access forbidden');
-  // }
+
   if (reqBody.text == '') {
-    let message = getNextMovie();
+    let message = getNextMovie(); // get next movie according to the calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (reqBody.text == 'previous') {
-    let message = getPreviousMovies();
+    let message = getPreviousMovies(); // get previous movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (reqBody.text == 'future') {
-    let message = getFutureMovies();
+    let message = getFutureMovies(); // get future movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
     console.log(`let's search for a movie => ${reqBody.text}`);
-
+    // search for a movie depending on the body text
     getMovie(reqBody.text).then(message => {
       console.log(message);
       sendMessageToSlackResponseURL(responseURL, message);
@@ -215,15 +212,19 @@ router.post('/actions', urlencodedParser, (req, res) => {
   console.log(actionJSONPayload);
 
   if (actionJSONPayload.actions[0].name == 'previous') {
-    let message = getPreviousMovies();
+    let message = getPreviousMovies(); // get previous movies according to calendar
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (actionJSONPayload.actions[0].name == 'future') {
-    let message = getFutureMovies();
+    let message = getFutureMovies(); // get future movie according to calendar
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (actionJSONPayload.actions[0].name == 'info') {
-    // start a function that reuses fetch and returns info about that movie
-    let message = 'find more info here';
-    sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
+    // get more info about the next movie using the API
+    getMovie(actionJSONPayload.actions[0].value).then(message => {
+      sendMessageToSlackResponseURL(responseURL, message);
+    });
+  } else if (actionJSONPayload.actions[0].name == 'post') {
+    // post the current movie
+    sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
   }
 });
 
