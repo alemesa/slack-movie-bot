@@ -23,16 +23,12 @@ let tempMovie = {};
 // API stuff
 const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
-function getDetailedData(id) {
-  return fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`);
-}
-
 // Format Search Data
 function formatSearchData(movie) {
   let message = {
     response_type: 'ephemeral',
     replace_original: false,
-    text: `${movie.title} - ${movie.release_date}`,
+    text: `🎩 ${movie.title} - ${movie.release_date} (${movie.original_language}) - (${movie.runtime} mins)`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -40,8 +36,8 @@ function formatSearchData(movie) {
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         color: `${variables.successColor}`,
         attachment_type: 'default',
-        title_link: '',
-        text: `${movie.overview}`,
+        title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
+        text: `${movie.tagline} - ${movie.overview}`,
         actions: [
           {
             name: 'post',
@@ -83,7 +79,12 @@ function getMovie(movie) {
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
   return fetch(searchQuery)
     .then(res => res.json())
-    .then(json => getDetailedData(json.results[0].id))
+    .then(json =>
+      fetch(
+        `https://api.themoviedb.org/3/movie/${json.results[0]
+          .id}?api_key=${apiKey}`
+      )
+    )
     .then(res => res.json())
     .then(data => formatSearchData(data))
     .catch(err => console.log(err));
