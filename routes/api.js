@@ -25,12 +25,19 @@ const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
 // Format Search Data
 function formatSearchData(movie) {
-  movie.production_countries.map(country => console.log(country.iso_3166_1));
+  let production_countries;
+  let production_company = movie.production_companies[0].name;
+  let genres;
+
+  movie.production_countries.map(
+    country => (production_countries += country.iso_3166_1)
+  );
+  movie.genres.map(genre => (production_countries += genre.name));
 
   let message = {
     response_type: 'ephemeral',
     replace_original: false,
-    text: `\tDate: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins`,
+    text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -40,7 +47,7 @@ function formatSearchData(movie) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline}\n${movie.overview}`,
+        text: `_${movie.tagline}_ | ${production_company} | ${production_countries} | ${genres}\n${movie.overview}`,
         actions: [
           {
             name: 'post',
