@@ -140,7 +140,7 @@ function getPreviousMovies() {
     });
 
   let message = {
-    response_type: 'in_channel',
+    response_type: 'ephemeral',
     text: `Previous Movies`,
     replace_original: false,
     attachments: [
@@ -164,7 +164,7 @@ function getFutureMovies() {
   });
 
   let message = {
-    response_type: 'in_channel',
+    response_type: 'ephemeral',
     text: `Future Movies`,
     replace_original: false,
     attachments: [
