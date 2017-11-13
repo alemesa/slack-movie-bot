@@ -20,11 +20,11 @@ let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
 
-function formatSearchData(movie, scope = 'ephemeral') {
+function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
 
   let message = {
-    response_type: 'ephemeral', // private to the channel
+    //response_type: 'ephemeral', // private to the channel
     text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
@@ -47,7 +47,7 @@ function formatSearchData(movie, scope = 'ephemeral') {
   };
   console.log(message);
   tempMovie = message;
-  tempMovie.response_type = 'ephemeral';
+  tempMovie.response_type = 'in_channel';
   tempMovie.actions = [];
   return message;
 }
