@@ -83,7 +83,6 @@ function formatSearchData(movie, search) {
       response_type: 'ephemeral',
       text: `${variables.movieWarning}`
     };
-    return message;
   }
   return message;
 }
