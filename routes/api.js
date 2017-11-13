@@ -37,9 +37,9 @@ let tempMovie = {};
 // }
 
 function formatSearchData(movie) {
-  console.log(movie);
+  console.log('Inside FORMAT SEARCH data ' + movie);
   let message = {
-    response_type: 'ephemeral', // public to the channel
+    response_type: 'ephemeral', // private to the channel
     text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
@@ -62,12 +62,14 @@ function formatSearchData(movie) {
   tempMovie = message;
   tempMovie.response_type = 'in_channel';
   tempMovie.actions = [];
+  console.log('Message after formating inside Format function ' + message);
   return message;
 }
 
 function getMovie(movie) {
   const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
+  const specificSearchQuery = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`;
   fetch(searchQuery)
     .then(res => res.json())
     .then(json => json.results[0])
