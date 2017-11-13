@@ -20,32 +20,19 @@ let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
 
-// api stuff
-
-// function getInfo(movie) {
-
-//   const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
-//   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
-
-//   return fetch(searchQuery)
-//     .then(res => res.json())
-//     .then(json => json.results[0])
-//     .then(movie => {
-//         `${movie.original_title} - ${movie.release_date}`,`https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-//     })
-//     .catch(err => console.log(err));
-// }
-
 function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
+
+  let text = movie.original_title + ' ' + movie.release_date;
+  let imageSrc = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
+
   let message = {
     response_type: 'ephemeral', // private to the channel
-    text: `${movie.original_title} - ${movie.release_date}`,
+    text: text,
     attachments: [
       {
         callback_id: 'search',
-        color: `${variables.color}`,
-        image_url: `${data[1]}`,
+        image_url: imageSrc,
         actions: [
           {
             name: 'post',
@@ -58,11 +45,9 @@ function formatSearchData(movie) {
       }
     ]
   };
-  // Keep a temporal variable in case the user want's too post the movie
   tempMovie = message;
   tempMovie.response_type = 'in_channel';
   tempMovie.actions = [];
-  console.log('Message after formating inside Format function ' + message);
   return message;
 }
 
@@ -72,8 +57,7 @@ function getMovie(movie) {
   const specificSearchQuery = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`;
   fetch(searchQuery)
     .then(res => res.json())
-    .then(json => json.results[0])
-    .then(movie => formatSearchData(movie))
+    .then(json => formatSearchData(json.results[0]))
     .catch(err => console.log(err));
 }
 
