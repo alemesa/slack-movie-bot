@@ -1,15 +1,23 @@
 const fetch = require('node-fetch');
-let tempMovie = {};
+const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
 function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
-
+  console.log(movie.id);
   let text = movie.original_title + ' ' + movie.release_date;
   let imageSrc = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
+  const specificSearchQuery = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`;
+  console.log(specificSearchQuery);
+  let imdb = ' asdasdasd';
+
+  fetch(specificSearchQuery)
+    .then(res => res.json())
+    .then(json => json.imdb_id)
+    .then(id => (imdb = id));
 
   let message = {
     response_type: 'ephemeral', // private to the channel
-    text: text,
+    text: text + imdb,
     attachments: [
       {
         callback_id: 'search',
@@ -25,10 +33,8 @@ function formatSearchData(movie) {
       }
     ]
   };
-  console.log(message);
-  tempMovie = message;
-  tempMovie.response_type = 'in_channel';
-  tempMovie.actions = [];
+  console.log(message.text);
+
   return message;
 }
 
@@ -42,4 +48,4 @@ function getMovie(movie) {
     .catch(err => console.log(err));
 }
 
-getMovie('it');
+getMovie('gladiator');

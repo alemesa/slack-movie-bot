@@ -20,6 +20,13 @@ let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
 
+// API stuff
+const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
+
+function getDetailedData(id) {
+  return fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`);
+}
+
 // Format Search Data
 function formatSearchData(movie) {
   let message = {
@@ -73,12 +80,12 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
 
 // Get movie from search
 function getMovie(movie) {
-  const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
-  const specificSearchQuery = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`;
   return fetch(searchQuery)
     .then(res => res.json())
-    .then(json => formatSearchData(json.results[0]))
+    .then(json => getDetailedData(json.results[0].id))
+    .then(res => res.json())
+    .then(data => formatSearchData(data))
     .catch(err => console.log(err));
 }
 
