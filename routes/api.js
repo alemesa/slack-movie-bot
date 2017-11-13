@@ -21,48 +21,56 @@ let nextMovie = futureMovies[0];
 
 // api stuff
 
-function getInfo(movie) {
-  let text = '';
-  let poster = '';
+// function getInfo(movie) {
 
-  const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
-  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
+//   const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
+//   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
 
-  return fetch(searchQuery)
-    .then(res => res.json())
-    .then(json => json.results[0])
-    .then(movie => {
-      return [
-        (text = `${movie.original_title} - ${movie.release_date}`),
-        (poster = `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
-      ];
-    })
-    .catch(err => console.log(err));
+//   return fetch(searchQuery)
+//     .then(res => res.json())
+//     .then(json => json.results[0])
+//     .then(movie => {
+//         `${movie.original_title} - ${movie.release_date}`,`https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+//     })
+//     .catch(err => console.log(err));
+// }
+
+function formatSearchData(data) {
+  let message = {
+    response_type: 'ephemeral', // public to the channel
+    text: `${data[0]}`,
+    attachments: [
+      {
+        callback_id: 'search',
+        color: `${variables.color}`,
+        image_url: `${data[1]}`,
+        actions: [
+          {
+            name: 'post',
+            text: 'Post Public',
+            type: 'button',
+            value: 'post',
+            style: 'danger'
+          }
+        ]
+      }
+    ]
+  };
+  return message;
 }
 
 function fetchMovie(movie) {
-  getInfo(movie).then(res => {
-    return {
-      response_type: 'ephemeral', // public to the channel
-      text: `${res[0]}`,
-      attachments: [
-        {
-          callback_id: 'search',
-          color: `${variables.color}`,
-          image_url: `${res[1]}`,
-          actions: [
-            {
-              name: 'post',
-              text: 'Post Public',
-              type: 'button',
-              value: 'post',
-              style: 'danger'
-            }
-          ]
-        }
-      ]
-    };
-  });
+  const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
+  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
+  fetch(movie)
+    .then(res => res.json())
+    .then(json => json.results[0])
+    .then(movie => {
+      `${movie.original_title} - ${movie.release_date}`,
+        `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+    })
+    .then(res => formatSearchData(res))
+    .catch(err => console.log(err));
 }
 
 function getNextMovie() {
@@ -194,6 +202,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     console.log(`let's search for a movie => ${reqBody.text}`);
 
     fetchMovie(reqBody.text).then(message => {
+      console.log(message);
       sendMessageToSlackResponseURL(responseURL, message);
     });
   }
