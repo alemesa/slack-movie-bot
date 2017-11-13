@@ -24,8 +24,7 @@ function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
 
   let text = `${movie.original_title} - ${movie.release_date}`;
-  //let imageSrc = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-  let imageSrc = 'http://lexingtonvenue.com/media/poster-placeholder.jpg';
+  let imageSrc = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
   let message = {
     response_type: 'ephemeral', // private to the channel
@@ -34,7 +33,7 @@ function formatSearchData(movie) {
       {
         callback_id: 'search',
         image_url: imageSrc,
-        color: '#E3C94A',
+        color: `${variables.color}`,
         attachment_type: 'default',
         actions: [
           {
