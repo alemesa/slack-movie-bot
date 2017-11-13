@@ -25,7 +25,7 @@ function formatSearchData(movie) {
   let message = {
     response_type: 'ephemeral',
     replace_original: false,
-    text: `${movie.original_title} - ${movie.release_date}`,
+    text: `${movie.title} - ${movie.release_date}`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -47,7 +47,7 @@ function formatSearchData(movie) {
     ]
   };
   tempMovie = message;
-  tempMovie.response_type = 'in_channel';
+  tempMovie.response_type = 'ephemeral';
   tempMovie.replace_original = true;
   tempMovie.attachments.color = `${variables.errorColor}`;
   tempMovie.actions = '';
@@ -89,7 +89,7 @@ function getNextMovie() {
   let message = {
     response_type: 'in_channel',
     replace_original: false,
-    text: `${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
+    text: `🎥 Next Movie: ${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
       nextMovie.date
     ).format('ddd, Do MMMM')}`,
     attachments: [
@@ -225,8 +225,6 @@ router.post('/actions', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with 200 status
   var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
 
-  var responseURL = req.body.response_url;
-
   if (actionJSONPayload.actions[0].name == 'previous') {
     console.log('BUTTON Getting the Previous Movies');
     let message = getPreviousMovies(); // get previous movies according to calendar
@@ -246,7 +244,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
     console.log('BUTTON Posting Public Clicked');
     // post the current movie
     console.log(tempMovie);
-    sendMessageToSlackResponseURL(response_url, tempMovie);
+    sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
   }
 });
 
