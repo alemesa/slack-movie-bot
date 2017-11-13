@@ -97,21 +97,26 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
   });
 }
 
-function getRandomMovie(movies) {
-  let keys = Array.from(movies.keys());
-  return keys[Math.floor(Math.random() * keys.length)];
+function getRandomMovie(movies, popular) {
+  if (popular == true) {
+    return 0;
+  } else {
+    let keys = Array.from(movies.keys());
+    return keys[Math.floor(Math.random() * keys.length)];
+  }
 }
 
 // Get movie from search
-function getMovie(movie) {
+function getMovie(movie, popular = true) {
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
   return fetch(searchQuery)
     .then(res => res.json())
     .then(json =>
       fetch(
-        `https://api.themoviedb.org/3/movie/${json.results[
+        `https://api.themoviedb.org/3/movie/${(json.results[
           getRandomMovie(json.results)
-        ].id}?api_key=${apiKey}`
+        ].id,
+        popular)}?api_key=${apiKey}`
       )
     )
     .then(res => res.json())
@@ -244,7 +249,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getFutureMovies(); // get future movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
-    getMovie(bodyText).then(message => {
+    getMovie(bodyText, true).then(message => {
       sendMessageToSlackResponseURL(responseURL, message);
     });
   }
@@ -264,11 +269,11 @@ router.post('/actions', urlencodedParser, (req, res) => {
     let message = getFutureMovies();
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (optionName == 'shuffle') {
-    getMovie(optionValue).then(message => {
+    getMovie(optionValue, false).then(message => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'info') {
-    getMovie(optionValue).then(message => {
+    getMovie(optionValue, true).then(message => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'post') {
