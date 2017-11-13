@@ -23,8 +23,9 @@ let tempMovie = {};
 function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
 
-  let text = movie.original_title + ' ' + movie.release_date;
-  let imageSrc = 'http://image.tmdb.org/t/p/w500' + movie.poster_path;
+  let text = `${movie.original_title} - ${movie.release_date}`;
+  //let imageSrc = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+  let imageSrc = 'http://lexingtonvenue.com/media/poster-placeholder.jpg';
 
   let message = {
     response_type: 'ephemeral', // private to the channel
@@ -33,13 +34,14 @@ function formatSearchData(movie) {
       {
         callback_id: 'search',
         image_url: imageSrc,
+        color: '#E3C94A',
+        attachment_type: 'default',
         actions: [
           {
             name: 'post',
             text: 'Post Public',
             type: 'button',
-            value: 'post',
-            style: 'danger'
+            value: 'post'
           }
         ]
       }
