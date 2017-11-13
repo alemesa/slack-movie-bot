@@ -26,57 +26,65 @@ const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
 // Format Search Data
 function formatSearchData(movie, search) {
-  let production_countries = '';
-  let production_company = movie.production_companies[0]
-    ? movie.production_companies[0].name
-    : '';
-  let genres = '';
+  if (movie) {
+    let production_countries = '';
+    let production_company = movie.production_companies[0]
+      ? movie.production_companies[0].name
+      : '';
+    let genres = '';
 
-  if (movie.productions_countries) {
-    movie.production_countries.map(
-      country => (production_countries += `${country.iso_3166_1 || ''} `)
-    );
-  }
-  if (movie.genres) {
-    movie.genres.map(genre => (genres += `${genre.name || ''} `));
-  }
+    if (movie.productions_countries) {
+      movie.production_countries.map(
+        country => (production_countries += `${country.iso_3166_1 || ''} `)
+      );
+    }
+    if (movie.genres) {
+      movie.genres.map(genre => (genres += `${genre.name || ''} `));
+    }
 
-  let message = {
-    response_type: 'ephemeral',
-    replace_original: true,
-    text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins | ${production_company}`,
-    attachments: [
-      {
-        fallback: 'Unable to search that movie',
-        callback_id: 'search',
-        image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        color: `${variables.successColor}`,
-        attachment_type: 'default',
-        title: `${movie.title}`,
-        title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline} | ${production_countries} | ${genres}\n${movie.overview}`,
-        actions: [
-          {
-            name: 'post',
-            text: 'Post Public on #movie-night',
-            type: 'button',
-            value: 'post'
-          },
-          {
-            name: 'shuffle',
-            text: 'Shuffle Movie',
-            type: 'button',
-            value: `${search}`
-          }
-        ]
-      }
-    ]
-  };
-  tempMovie = message;
-  tempMovie.response_type = 'ephemeral';
-  tempMovie.replace_original = true;
-  tempMovie.attachments.color = `${variables.errorColor}`;
-  tempMovie.attachments.actions = '';
+    let message = {
+      response_type: 'ephemeral',
+      replace_original: true,
+      text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins | ${production_company}`,
+      attachments: [
+        {
+          fallback: 'Unable to search that movie',
+          callback_id: 'search',
+          image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+          color: `${variables.successColor}`,
+          attachment_type: 'default',
+          title: `${movie.title}`,
+          title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
+          text: `${movie.tagline} | ${production_countries} | ${genres}\n${movie.overview}`,
+          actions: [
+            {
+              name: 'post',
+              text: 'Post Public on #movie-night',
+              type: 'button',
+              value: 'post'
+            },
+            {
+              name: 'shuffle',
+              text: 'Shuffle Movie',
+              type: 'button',
+              value: `${search}`
+            }
+          ]
+        }
+      ]
+    };
+    tempMovie = message;
+    tempMovie.response_type = 'ephemeral';
+    tempMovie.replace_original = true;
+    tempMovie.attachments.color = `${variables.errorColor}`;
+    tempMovie.attachments.actions = '';
+  } else {
+    let message = {
+      response_type: 'ephemeral',
+      text: `${variables.movieWarning}`
+    };
+    return message;
+  }
   return message;
 }
 
