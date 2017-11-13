@@ -24,7 +24,7 @@ function formatSearchData(movie, scope = 'ephemeral') {
   console.log('Inside FORMAT SEARCH data ' + movie);
 
   let message = {
-    response_type: scope, // private to the channel
+    "response_type": "ephemeral", // private to the channel
     text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
