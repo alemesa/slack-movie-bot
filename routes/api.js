@@ -20,11 +20,11 @@ let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
 
+// Format Search Data
 function formatSearchData(movie) {
-  console.log('Inside FORMAT SEARCH data ' + movie);
-
   let message = {
     response_type: 'ephemeral',
+    replace_original: true,
     text: `${movie.original_title} - ${movie.release_date}`,
     attachments: [
       {
@@ -33,6 +33,7 @@ function formatSearchData(movie) {
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         color: `${variables.successColor}`,
         attachment_type: 'default',
+        title_link: 'https://google.ca',
         text: `${movie.overview}`,
         actions: [
           {
@@ -45,13 +46,30 @@ function formatSearchData(movie) {
       }
     ]
   };
-  console.log(message);
   tempMovie = message;
   tempMovie.response_type = 'in_channel';
   tempMovie.actions = [];
   return message;
 }
 
+// Slack Functionality
+function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
+  var postOptions = {
+    uri: responseURL,
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    json: JSONmessage
+  };
+  request(postOptions, (error, response, body) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+}
+
+// Get movie from search
 function getMovie(movie) {
   const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
@@ -62,6 +80,7 @@ function getMovie(movie) {
     .catch(err => console.log(err));
 }
 
+// Get next movie from the JSON Calendar
 function getNextMovie() {
   let image = `${movies.poster}`;
 
@@ -168,10 +187,10 @@ router.get('/api/movies', (req, res) => {
 
 // Handle POST request form '/movie' slash command
 router.post('/movie', urlencodedParser, (req, res) => {
-  console.log('post received, processing request');
   res.status(200).end(); // best practice to respond with empty 200 status code
   var reqBody = req.body;
   var responseURL = reqBody.response_url;
+  console.log(reqBody);
 
   if (reqBody.text == '') {
     let message = getNextMovie(); // get next movie according to the calendar
@@ -196,7 +215,6 @@ router.post('/movie', urlencodedParser, (req, res) => {
 router.post('/actions', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with 200 status
   var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
-  console.log(actionJSONPayload);
 
   if (actionJSONPayload.actions[0].name == 'previous') {
     let message = getPreviousMovies(); // get previous movies according to calendar
@@ -207,7 +225,6 @@ router.post('/actions', urlencodedParser, (req, res) => {
   } else if (actionJSONPayload.actions[0].name == 'info') {
     // get more info about the next movie using the API
     getMovie(actionJSONPayload.actions[0].value).then(message => {
-      console.log(message);
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (actionJSONPayload.actions[0].name == 'post') {
@@ -215,22 +232,5 @@ router.post('/actions', urlencodedParser, (req, res) => {
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
   }
 });
-
-// Slack Functionality
-function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
-  var postOptions = {
-    uri: responseURL,
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
-    json: JSONmessage
-  };
-  request(postOptions, (error, response, body) => {
-    if (error) {
-      console.log(error);
-    }
-  });
-}
 
 module.exports = router;
