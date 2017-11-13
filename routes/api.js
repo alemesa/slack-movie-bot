@@ -25,14 +25,14 @@ const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
 // Format Search Data
 function formatSearchData(movie) {
-  let production_countries;
+  let production_countries = '';
   let production_company = movie.production_companies[0].name;
-  let genres;
+  let genres = '';
 
   movie.production_countries.map(
-    country => (production_countries += country.iso_3166_1)
+    country => (production_countries += `${country.iso_3166_1} `)
   );
-  movie.genres.map(genre => (genres += genre.name));
+  movie.genres.map(genre => (genres += `${genre.name} `));
 
   let message = {
     response_type: 'ephemeral',
