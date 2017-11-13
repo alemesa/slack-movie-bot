@@ -56,7 +56,7 @@ function getMovie(movie) {
   const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
   const specificSearchQuery = `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`;
-  fetch(searchQuery)
+  return fetch(searchQuery)
     .then(res => res.json())
     .then(json => formatSearchData(json.results[0]))
     .catch(err => console.log(err));
