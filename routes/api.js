@@ -33,7 +33,7 @@ function formatSearchData(movie) {
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         color: `${variables.successColor}`,
         attachment_type: 'default',
-        title_link: 'https://google.ca',
+        title_link: '',
         text: `${movie.overview}`,
         actions: [
           {
@@ -47,7 +47,7 @@ function formatSearchData(movie) {
     ]
   };
   tempMovie = message;
-  tempMovie.response_type = 'ephemeral';
+  tempMovie.response_type = 'in_channel';
   tempMovie.replace_original = true;
   tempMovie.attachments.color = `${variables.errorColor}`;
   tempMovie.actions = '';
@@ -87,9 +87,9 @@ function getNextMovie() {
   let image = `${movies.poster}`;
 
   let message = {
-    response_type: 'ephemeral',
+    response_type: 'in_channel',
     replace_original: false,
-    text: `⬇️ ${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
+    text: `${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
       nextMovie.date
     ).format('ddd, Do MMMM')}`,
     attachments: [
@@ -140,8 +140,8 @@ function getPreviousMovies() {
     });
 
   let message = {
-    response_type: 'ephemeral',
-    text: `◀️ Previous Movies`,
+    response_type: 'in_channel',
+    text: `Previous Movies`,
     replace_original: false,
     attachments: [
       {
@@ -164,8 +164,8 @@ function getFutureMovies() {
   });
 
   let message = {
-    response_type: 'ephemeral',
-    text: `▶️ Future Movies`,
+    response_type: 'in_channel',
+    text: `Future Movies`,
     replace_original: false,
     attachments: [
       {
@@ -225,6 +225,8 @@ router.post('/actions', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with 200 status
   var actionJSONPayload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
 
+  var responseURL = req.body.response_url;
+
   if (actionJSONPayload.actions[0].name == 'previous') {
     console.log('BUTTON Getting the Previous Movies');
     let message = getPreviousMovies(); // get previous movies according to calendar
@@ -244,7 +246,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
     console.log('BUTTON Posting Public Clicked');
     // post the current movie
     console.log(tempMovie);
-    sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
+    sendMessageToSlackResponseURL(response_url, tempMovie);
   }
 });
 
