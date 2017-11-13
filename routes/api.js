@@ -59,10 +59,10 @@ function formatSearchData(data) {
   return message;
 }
 
-function fetchMovie(movie) {
+function getMovie(movie) {
   const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
-  fetch(movie)
+  fetch(searchQuery)
     .then(res => res.json())
     .then(json => json.results[0])
     .then(movie => {
@@ -201,7 +201,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
   } else {
     console.log(`let's search for a movie => ${reqBody.text}`);
 
-    fetchMovie(reqBody.text).then(message => {
+    getMovie(reqBody.text).then(message => {
       console.log(message);
       sendMessageToSlackResponseURL(responseURL, message);
     });
