@@ -47,7 +47,7 @@ function formatSearchData(movie) {
     ]
   };
   tempMovie = message;
-  tempMovie.response_type = 'in_channel';
+  tempMovie.response_type = 'ephemeral';
   tempMovie.replace_original = true;
   tempMovie.attachments.color = `${variables.errorColor}`;
   tempMovie.actions = '';
@@ -87,9 +87,9 @@ function getNextMovie() {
   let image = `${movies.poster}`;
 
   let message = {
-    response_type: 'in_channel',
+    response_type: 'ephemeral',
     replace_original: false,
-    text: `${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
+    text: `⬇️ ${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
       nextMovie.date
     ).format('ddd, Do MMMM')}`,
     attachments: [
@@ -140,8 +140,8 @@ function getPreviousMovies() {
     });
 
   let message = {
-    response_type: 'in_channel',
-    text: `Previous Movies`,
+    response_type: 'ephemeral',
+    text: `◀️ Previous Movies`,
     replace_original: false,
     attachments: [
       {
@@ -164,8 +164,8 @@ function getFutureMovies() {
   });
 
   let message = {
-    response_type: 'in_channel',
-    text: `Future Movies`,
+    response_type: 'ephemeral',
+    text: `▶️ Future Movies`,
     replace_original: false,
     attachments: [
       {
