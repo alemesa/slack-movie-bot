@@ -36,7 +36,7 @@ function formatSearchData(movie) {
 
   let message = {
     response_type: 'ephemeral',
-    replace_original: false,
+    replace_original: true,
     text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins | ${production_company}`,
     attachments: [
       {
@@ -54,6 +54,12 @@ function formatSearchData(movie) {
             text: 'Post Public on #movie-night',
             type: 'button',
             value: 'post'
+          },
+          {
+            name: 'shuffle',
+            text: 'Shuffle Movie',
+            type: 'button',
+            value: `${movie.title}`
           }
         ]
       }
@@ -84,15 +90,21 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
   });
 }
 
+function getRandomMovie(movies) {
+  let keys = Array.from(movies.keys());
+  return keys[Math.floor(Math.random() * keys.length)];
+}
+
 // Get movie from search
-function getMovie(movie) {
+function getMovie(movie, random = false) {
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
   return fetch(searchQuery)
     .then(res => res.json())
     .then(json =>
       fetch(
-        `https://api.themoviedb.org/3/movie/${json.results[0]
-          .id}?api_key=${apiKey}`
+        `https://api.themoviedb.org/3/movie/${random
+          ? json.results[getRandomMovie(json.results)].id
+          : json.results[0].id}?api_key=${apiKey}`
       )
     )
     .then(res => res.json())
@@ -251,9 +263,17 @@ router.post('/actions', urlencodedParser, (req, res) => {
     console.log('BUTTON Getting the Future Movies');
     let message = getFutureMovies(); // get future movie according to calendar
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
+  } else if (actionJSONPayload.actions[0].name == 'shuffle') {
+    console.log('BUTTON Shuffle Movie');
+    getMovie(actionJSONPayload.actions[0].value, true).then(message => {
+      console.log(message);
+      sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
+    });
+    let message = getFutureMovies(); // get a new movie if possible
+    sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
   } else if (actionJSONPayload.actions[0].name == 'info') {
     // get more info about the next movie using the API
-    getMovie(actionJSONPayload.actions[0].value).then(message => {
+    getMovie(actionJSONPayload.actions[0].value, false).then(message => {
       console.log('BUTTON Getting Movie Extra Info');
       console.log(message);
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
