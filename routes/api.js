@@ -32,7 +32,6 @@ function getInfo(movie) {
     .then(res => res.json())
     .then(json => json.results[0])
     .then(movie => {
-      console.log(movie);
       return [
         (text = `${movie.original_title} - ${movie.release_date}`),
         (poster = `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
@@ -195,6 +194,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     console.log(`let's search for a movie => ${reqBody.text}`);
     //let message = fetchMovie(reqBody.text);
     //console.log(message + 'Being posted');
+    console.log(fetchMovie(reqBody.text));
     sendMessageToSlackResponseURL(responseURL, fetchMovie(reqBody.text));
   }
 });
