@@ -225,8 +225,9 @@ router.get('/api/movies', (req, res) => {
 // Handle POST request form '/movie' slash command
 router.post('/movie', urlencodedParser, (req, res) => {
   res.status(200).end(); // best practice to respond with empty 200 status code
-  var bodyText = req.body.text;
-  var responseURL = reqBody.response_url;
+  var body = req.body;
+  var bodyText = body.text;
+  var responseURL = body.response_url;
 
   if (bodyText == '') {
     let message = getNextMovie(); // get next movie according to the calendar
