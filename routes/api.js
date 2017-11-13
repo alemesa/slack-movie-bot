@@ -32,12 +32,12 @@ function formatSearchData(movie) {
   movie.production_countries.map(
     country => (production_countries += country.iso_3166_1)
   );
-  movie.genres.map(genre => (production_countries += genre.name));
+  movie.genres.map(genre => (genres += genre.name));
 
   let message = {
     response_type: 'ephemeral',
     replace_original: false,
-    text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins`,
+    text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins | ${production_company}`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -47,7 +47,7 @@ function formatSearchData(movie) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `_${movie.tagline}_ | ${production_company} | ${production_countries} | ${genres}\n${movie.overview}`,
+        text: `${movie.tagline} | ${production_countries} | ${genres}\n${movie.overview}`,
         actions: [
           {
             name: 'post',
