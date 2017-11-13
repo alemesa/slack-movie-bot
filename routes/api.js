@@ -24,7 +24,7 @@ function formatSearchData(movie) {
   console.log('Inside FORMAT SEARCH data ' + movie);
 
   let text = movie.original_title + ' ' + movie.release_date;
-  let imageSrc = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
+  let imageSrc = 'http://image.tmdb.org/t/p/w500' + movie.poster_path;
 
   let message = {
     response_type: 'ephemeral', // private to the channel
