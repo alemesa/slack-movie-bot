@@ -27,7 +27,7 @@ const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 // Format Search Data
 function formatSearchData(movie, search) {
   let production_countries = '';
-  let production_company = movie.production_companies[0]
+  let production_company = movie.production_companies
     ? movie.production_companies[0].name
     : '';
   let genres = '';
@@ -98,7 +98,8 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
 }
 
 function getRandomMovie(movies, popular) {
-  if (popular == true) {
+  console.log(movies, popular);
+  if (popular) {
     return 0;
   } else {
     let keys = Array.from(movies.keys());
