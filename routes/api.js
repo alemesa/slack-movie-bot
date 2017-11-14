@@ -47,9 +47,9 @@ function formatSearchData(movie, search) {
     response_type: 'ephemeral',
     replace_original: true,
     text: `\t${movie.release_date
-      ? `📽️ Date: ${movie.release_date} | `
+      ? `📽️ Date: ${movie.release_date} |`
       : ''} ${movie.original_language
-      ? `Lang: ${movie.original_language.toUpperCase()} | `
+      ? `Lang: ${movie.original_language.toUpperCase()} |`
       : ''}  ${movie.runtime
       ? `Runtime: ${movie.runtime} mins `
       : ''} ${production_company ? `| ${production_company}` : ''}`,
@@ -62,11 +62,9 @@ function formatSearchData(movie, search) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline
-          ? movie.tagline + '|'
-          : ''} ${production_countries
-          ? production_countries + '|'
-          : ''} ${genres ? genres + '|' : ''}\n${movie.overview}`,
+        text: `${movie.tagline ? `${movie.tagline} |` : ''} 
+               ${production_countries ? `${production_countries} |` : ''} 
+               ${genres ? `${genres} |` : ''}\n${movie.overview}`,
         actions: [
           {
             name: 'post',
