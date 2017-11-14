@@ -8,7 +8,10 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const fs = require('fs');
 const moment = require('moment');
 // secret
-const TOKEN = '4Xnfaf6wEsWftMP5puPSKFiF';
+const CLIENT_ID = '265433400768.269305280000';
+const CLIENT_SECRET = '0ddef22b6dcbc4ac8a5f85d7de70489b';
+const REDIRECT_URI = 'https://slack-movie-bot-jam3.herokuapp.com/auth/redirect';
+const VERIFICATION_TOKEN = '';
 
 // Getting local JSON Data
 let movies = JSON.parse(fs.readFileSync('./data/movies.json'));
@@ -19,75 +22,65 @@ let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
-let tempSearchTerm = '';
 
 // API stuff
 const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
 // Format Search Data
 function formatSearchData(movie, search) {
-  if (movie) {
-    let production_countries = '';
-    let production_company = movie.production_companies[0]
-      ? movie.production_companies[0].name
-      : '';
-    let genres = '';
+  let production_countries = '';
+  let production_company = movie.production_companies[0]
+    ? movie.production_companies[0].name
+    : '';
+  let genres = '';
 
-    if (movie.productions_countries) {
-      movie.production_countries.map(
-        country => (production_countries += `${country.iso_3166_1 || ''} `)
-      );
-    }
-    if (movie.genres) {
-      movie.genres.map(genre => (genres += `${genre.name || ''} `));
-    }
-
-    let message = {
-      response_type: 'ephemeral',
-      replace_original: true,
-      text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins | ${production_company}`,
-      attachments: [
-        {
-          fallback: 'Unable to search that movie',
-          callback_id: 'search',
-          image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-          color: `${variables.successColor}`,
-          attachment_type: 'default',
-          title: `${movie.title}`,
-          title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-          text: `${movie.tagline} | ${production_countries} | ${genres}\n${movie.overview}`,
-          actions: [
-            {
-              name: 'post',
-              text: 'Post Public on #movie-night',
-              type: 'button',
-              value: 'post'
-            },
-            {
-              name: 'shuffle',
-              text: 'Shuffle Movie',
-              type: 'button',
-              value: `${search}`
-            }
-          ]
-        }
-      ]
-    };
-    tempMovie = message;
-    tempMovie.response_type = 'ephemeral';
-    tempMovie.replace_original = true;
-    tempMovie.attachments.color = `${variables.errorColor}`;
-    tempMovie.attachments.actions = '';
-
-    return message;
-  } else {
-    let message = {
-      response_type: 'ephemeral',
-      text: `${variables.movieWarning}`
-    };
-
-    return message;
+  if (movie.productions_countries) {
+    movie.production_countries.map(
+      country => (production_countries += `${country.iso_3166_1 || ''} `)
+    );
   }
+  if (movie.genres) {
+    movie.genres.map(genre => (genres += `${genre.name || ''} `));
+  }
+
+  let message = {
+    response_type: 'ephemeral',
+    replace_original: true,
+    text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins | ${production_company}`,
+    attachments: [
+      {
+        fallback: 'Unable to search that movie',
+        callback_id: 'search',
+        image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+        color: `${variables.successColor}`,
+        attachment_type: 'default',
+        title: `${movie.title}`,
+        title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
+        text: `${movie.tagline} | ${production_countries} | ${genres}\n${movie.overview}`,
+        actions: [
+          {
+            name: 'post',
+            text: 'Post Public on #movie-night',
+            type: 'button',
+            value: 'post'
+          },
+          {
+            name: 'shuffle',
+            text: 'Shuffle Movie',
+            type: 'button',
+            value: `${search}`
+          }
+        ]
+      }
+    ]
+  };
+  tempMovie = message;
+  tempMovie.response_type = 'ephemeral';
+  tempMovie.replace_original = true;
+  tempMovie.attachments.color = `${variables.errorColor}`;
+  tempMovie.attachments.actions = '';
+
+  return message;
 }
 
 // Slack Functionality
@@ -290,6 +283,39 @@ router.post('/actions', urlencodedParser, (req, res) => {
       'https://hooks.slack.com/services/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';
     sendMessageToSlackResponseURL(movieHook, tempMovie);
   }
+});
+
+//!-------AUTH PROCESS-------!
+router.get('/auth', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
+router.get('/auth/redirect', (req, res) => {
+  var options = {
+    uri:
+      'https://slack.com/api/oauth.access?code=' +
+      req.query.code +
+      '&client_id=' +
+      CLIENT_ID +
+      '&client_secret=' +
+      CLIENT_SECRET +
+      '&redirect_uri=' +
+      REDIRECT_URI,
+    method: 'GET'
+  };
+  request(options, (error, response, body) => {
+    var JSONresponse = JSON.parse(body);
+    if (!JSONresponse.ok) {
+      console.log(JSONresponse);
+      res
+        .send('Error encountered: \n' + JSON.stringify(JSONresponse))
+        .status(200)
+        .end();
+    } else {
+      console.log(JSONresponse);
+      res.send('Success!');
+    }
+  });
 });
 
 module.exports = router;

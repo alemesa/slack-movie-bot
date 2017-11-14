@@ -1,37 +1,126 @@
 * {
   box-sizing: border-box;
-  font-family: monospace;
+  font-family: 'Lato', sans-serif;
+  letter-spacing: 0.5px;
+}
+html {
+  font-size: 62.5%;
+}
+body,
+html {
+  padding: 0;
+  margin: 0;
 }
 
-h1 {
-  width: 100%;
-  text-align: center;
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+#particles-js {
+  overflow: hidden;
+  background: #2257ba;
+  height: 100vh;
+  width: 100vw;
+}
+
+.centered {
+  width: 60%;
+  height: 42%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(245, 241, 241, 0.8);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text h1 {
+  font-size: 2.6rem;
+  font-weight: 400;
+  margin: 0 0 2rem 0;
+}
+.text p {
+  font-size: 2rem;
   font-weight: 300;
+  margin: 0 0 1rem 0;
 }
 
-.grid {
-  background: #f4f2f3;
+.text #logo {
+  width: 6rem;
+  margin: 0 0 1rem 0;
 }
 
-/* clear fix */
-.grid:after {
-  content: '';
-  display: block;
-  clear: both;
+.icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
-/* ---- .grid-item ---- */
-
-.grid-sizer,
-.grid-item {
-  width: 33.333%;
+a {
+  background-color: white;
+  width: 16rem;
+  padding: 1rem;
+  height: 5rem;
+  text-decoration: none;
+  color: black;
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 1rem;
+  border-radius: 5px;
+  transition: 0.125s all ease-in;
+}
+a:hover {
+  transform: translateY(-1px);
 }
 
-.grid-item {
-  float: left;
+a img {
+  width: 30px;
+  margin-left: 0.5rem;
+  margin-right: 1.5rem;
 }
 
-.grid-item img {
-  display: block;
-  max-width: 100%;
+@media (min-width: 200px) and (max-width: 580px) {
+  .centered {
+    width: 95%;
+  }
+}
+
+@media (min-width: 580px) and (max-width: 800px) {
+  .centered {
+    width: 70%;
+  }
+}
+
+@media (min-width: 800px) and (max-width: 1280px) {
+  .centered {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .centered {
+    width: 45%;
+  }
+}
+
+@media (max-height: 585px) {
+  .centered {
+    height: 75%;
+  }
 }
