@@ -46,7 +46,13 @@ function formatSearchData(movie, search) {
   let message = {
     response_type: 'ephemeral',
     replace_original: true,
-    text: `\t📽️ Date: ${movie.release_date} | Lang: ${movie.original_language.toUpperCase()} | Runtime: ${movie.runtime} mins | ${production_company}`,
+    text: `\t${movie.release_date
+      ? `📽️ Date: ${movie.release_date} | `
+      : ''} ${movie.original_language
+      ? `Lang: ${movie.original_language.toUpperCase()} | `
+      : ''}  ${movie.runtime
+      ? `Runtime: ${movie.runtime} mins `
+      : ''} ${production_company ? `| ${production_company}` : ''}`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -56,7 +62,11 @@ function formatSearchData(movie, search) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline} | ${production_countries} | ${genres}\n${movie.overview}`,
+        text: `${movie.tagline
+          ? movie.tagline + '|'
+          : ''} ${production_countries
+          ? production_countries + '|'
+          : ''} ${genres ? genres + '|' : ''}\n${movie.overview}`,
         actions: [
           {
             name: 'post',
@@ -131,7 +141,7 @@ function getNextMovie() {
   let message = {
     response_type: 'in_channel',
     replace_original: false,
-    text: `🎥 Next Movie: ${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
+    text: `📽️ Next Movie: ${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
       nextMovie.date
     ).format('ddd, Do MMMM')}`,
     attachments: [

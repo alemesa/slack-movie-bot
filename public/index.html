@@ -16,8 +16,12 @@
         <div class="centered">
             <div class="text">
                 <img id="logo" src="./images/favicon.png" alt="Logo Image">
+
                 <h1>Slack Movie Bot</h1>
-                <p>Search for movies directly on Slack</p>
+                <!-- <h3 class="element"></h3> -->
+                <p>Search for movies directly on Slack
+                    <span>/movie</span>
+                </p>
             </div>
 
 
@@ -33,10 +37,20 @@
 
 </body>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.6/typed.min.js"></script>
+
 <script>
     particlesJS.load('particles-js', 'particles.json', function () {
         console.log("Particles Loaded");
-    })
+    });
+    var options = {
+        strings: ["/movie", "/movie Gladiator", "/movie previous", "/movie future"],
+        typeSpeed: 60,
+        loop: true,
+        showCursor: false
+    }
+
+    var typed = new Typed(".element", options);
 </script>
 
 </html>

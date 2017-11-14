@@ -26,7 +26,7 @@ body {
 
 .centered {
   width: 60%;
-  height: 42%;
+  height: 45%;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -56,6 +56,20 @@ body {
   font-size: 2rem;
   font-weight: 300;
   margin: 0 0 1rem 0;
+}
+
+.text p span {
+  color: #000;
+  font-weight: 400;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: 0.125s all ease-in;
+}
+
+.text p span:hover {
+  color: #fff;
+  background-color: #359fde;
 }
 
 .text #logo {
