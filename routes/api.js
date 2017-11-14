@@ -18,7 +18,7 @@ let movies = JSON.parse(fs.readFileSync('./data/movies.json'));
 let variables = JSON.parse(fs.readFileSync('./data/vars.json'));
 
 // define movies
-let pastMovies = movies.data.filter(movie => moment(movie.date) <= moment());
+let pastMovies = movies.data.filter(movie => moment(movie.date) < moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
@@ -186,7 +186,7 @@ function getPreviousMovies() {
     .slice(-10)
     .reverse()
     .map(movie => {
-      text += `${movie.name} (${movie.year}) - ${movie.director} - ${moment(
+      text += `- ${movie.name} (${movie.year}) - ${movie.director} - ${moment(
         movie.date
       ).format('ddd, Do MMMM')}\n`;
     });
@@ -210,7 +210,7 @@ function getPreviousMovies() {
 function getFutureMovies() {
   let text = '';
   futureMovies.map(movie => {
-    text += `${movie.name} (${movie.year}) - ${movie.director} - ${moment(
+    text += `- ${movie.name} (${movie.year}) - ${movie.director} - ${moment(
       movie.date
     ).format('ddd, Do MMMM')}\n`;
   });
