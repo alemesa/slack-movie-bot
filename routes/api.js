@@ -62,9 +62,11 @@ function formatSearchData(movie, search) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline ? `${movie.tagline} |` : ''} 
-               ${production_countries ? `${production_countries} |` : ''} 
-               ${genres ? `${genres} |` : ''}\n${movie.overview}`,
+        text: `${movie.tagline
+          ? `${movie.tagline} | `
+          : ''}${production_countries ? `${production_countries}` : ''}${genres
+          ? ` | ${genres}`
+          : ''}\n${movie.overview}`,
         actions: [
           {
             name: 'post',
