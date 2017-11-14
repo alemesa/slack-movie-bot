@@ -273,7 +273,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
   var actionJSONPayload = JSON.parse(req.body.payload);
   let optionName = actionJSONPayload.actions[0].name;
   let optionValue = actionJSONPayload.actions[0].value;
-  console.log(JSON.parse(req));
+  console.log(req);
 
   if (optionName == 'previous') {
     let message = getPreviousMovies();
