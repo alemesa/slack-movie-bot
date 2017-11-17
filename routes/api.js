@@ -26,6 +26,15 @@ let tempMovie = {};
 // API stuff
 const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
+// Copying temporal movie
+function copyMovie(message) {
+  tempMovie = message;
+  tempMovie.response_type = 'in_channel';
+  tempMovie.replace_original = false;
+  tempMovie.attachments.color = '#D52E43';
+  tempMovie.attachments.actions = '';
+}
+
 // Format Search Data
 function formatSearchData(movie, search) {
   let production_countries = '';
@@ -58,7 +67,7 @@ function formatSearchData(movie, search) {
         fallback: 'Unable to search that movie',
         callback_id: 'search',
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        color: `${variables.successColor}`,
+        color: '#3AA3E3',
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
@@ -84,11 +93,8 @@ function formatSearchData(movie, search) {
       }
     ]
   };
-  tempMovie = message;
-  tempMovie.response_type = 'ephemeral';
-  tempMovie.replace_original = true;
-  tempMovie.attachments.color = `${variables.errorColor}`;
-  tempMovie.attachments.actions = '';
+
+  copyMovie(message);
 
   return message;
 }
@@ -148,7 +154,7 @@ function getNextMovie() {
       {
         callback_id: 'next',
         text: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
-        color: `${variables.jam3Color}`,
+        color: '#000000',
         image_url: `${movies.poster}`,
         footer: `${variables.location} - ${variables.time}`,
         actions: [
@@ -199,7 +205,7 @@ function getPreviousMovies() {
       {
         text: `${text}${variables.suggestion}`,
         callback_id: 'past',
-        color: `${variables.jam3Color}`
+        color: '#000000'
       }
     ]
   };
@@ -223,7 +229,7 @@ function getFutureMovies() {
       {
         text: `${text}${variables.suggestion}`,
         callback_id: 'future',
-        color: `${variables.jam3Color}`
+        color: '#000000'
       }
     ]
   };
@@ -293,8 +299,8 @@ router.post('/actions', urlencodedParser, (req, res) => {
   } else if (optionName == 'post') {
     let movieHook =
       'https://hooks.slack.com/services/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';
-    console.log(actionJSONPayload);
     console.log(actionJSONPayload.response_url);
+    console.log(tempMovie);
     sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
     //sendMessageToSlackResponseURL(movieHook, tempMovie);
   }
