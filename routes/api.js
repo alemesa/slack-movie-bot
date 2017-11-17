@@ -139,7 +139,7 @@ function getMovie(movie, popular = true) {
 // Get next movie from the JSON Calendar
 function getNextMovie() {
   let message = {
-    response_type: 'in_channel',
+    response_type: 'ephemeral',
     replace_original: false,
     text: `📽️ Next Movie: ${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
       nextMovie.date
