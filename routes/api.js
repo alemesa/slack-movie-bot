@@ -236,7 +236,7 @@ function getPreviousMovies(visible = false) {
       name: 'post-previous',
       text: 'Post Public',
       type: 'button',
-      value: `post-previous`
+      value: 'post-previous'
     }
   ];
 
@@ -263,7 +263,7 @@ function getPreviousMovies(visible = false) {
       }
     ]
   };
-  console.log(message);
+  console.log(message.attachments.actions);
   return message;
 }
 
