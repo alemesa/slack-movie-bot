@@ -33,6 +33,7 @@ function getWebhookByChannel(channel) {
   for (var [key, value] of webhookMap) {
     console.log(key + ' = ' + value);
     if (key == channel) {
+      console.log(value);
       return value;
     }
   }
