@@ -327,10 +327,10 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getNextMovie(); // get next movie according to the calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (bodyText == 'previous') {
-    let message = getPreviousMovies(); // get previous movie according to calendar
+    let message = getPreviousMovies(false); // get previous movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (bodyText == 'future') {
-    let message = getFutureMovies(); // get future movie according to calendar
+    let message = getFutureMovies(false); // get future movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
     getMovie(bodyText, true).then(message => {
@@ -361,7 +361,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'post') {
-    getMoviePublic(optionValue).then(message => {
+    getMoviePublic(optionValue, true).then(message => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'post-previous') {
