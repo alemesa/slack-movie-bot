@@ -231,14 +231,6 @@ function getNextMovie() {
 
 function getPreviousMovies(visible = false) {
   let text = '';
-  let actions = [
-    {
-      name: 'post-previous',
-      text: 'Post Public',
-      type: 'button',
-      value: 'post-previous'
-    }
-  ];
 
   // get last 10 items
   pastMovies
@@ -259,25 +251,25 @@ function getPreviousMovies(visible = false) {
         text: `${text}${variables.suggestion}`,
         callback_id: 'past',
         color: '#000000',
-        actions: `${visible ? '' : actions}`
+        actions: `${visible
+          ? ''
+          : [
+              {
+                name: 'post-previous',
+                text: 'Post Public',
+                type: 'button',
+                value: 'post-previous'
+              }
+            ]}`
       }
     ]
   };
-  console.log(message.attachments.actions);
+
   return message;
 }
 
 function getFutureMovies(visible = false) {
   let text = '';
-
-  let actions = [
-    {
-      name: 'post-future',
-      text: 'Post Public',
-      type: 'button',
-      value: `post-future`
-    }
-  ];
 
   futureMovies.map(movie => {
     text += `- ${movie.name} (${movie.year}) - ${movie.director} - ${moment(
@@ -294,7 +286,16 @@ function getFutureMovies(visible = false) {
         text: `${text}${variables.suggestion}`,
         callback_id: 'future',
         color: '#000000',
-        actions: `${visible ? '' : actions}`
+        actions: `${visible
+          ? ''
+          : [
+              {
+                name: 'post-future',
+                text: 'Post Public',
+                type: 'button',
+                value: `post-future`
+              }
+            ]}`
       }
     ]
   };
