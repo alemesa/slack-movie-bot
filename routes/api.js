@@ -39,16 +39,6 @@ function getWebhookByChannel(channel) {
   }
 }
 
-// Copying temporal movie
-function copyMovie(message) {
-  tempMovie = message;
-  tempMovie.response_type = 'in_channel';
-  tempMovie.replace_original = false;
-  tempMovie.attachments.color = '#D52E43';
-  tempMovie.attachments.actions = '';
-  console.log('Copy all values from movie to temp');
-}
-
 // Format Search Data
 function formatSearchData(movie, search) {
   let production_countries = '';
@@ -108,7 +98,12 @@ function formatSearchData(movie, search) {
     ]
   };
 
-  copyMovie(message);
+  tempMovie = Object.assign({}, obj);
+  tempMovie.response_type = 'in_channel';
+  tempMovie.replace_original = false;
+  tempMovie.attachments.color = '#D52E43';
+  tempMovie.attachments.actions = '';
+  console.log('copying and modifying objects');
 
   return message;
 }
