@@ -21,7 +21,6 @@ let variables = JSON.parse(fs.readFileSync('./data/vars.json'));
 let pastMovies = movies.data.filter(movie => moment(movie.date) < moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
-let tempMovie = {};
 let webhook = {};
 let webhookMap = new Map();
 
@@ -37,6 +36,54 @@ function getWebhookByChannel(channel) {
       return value;
     }
   }
+}
+
+function formatSearchPublicData(movie, search) {
+  let production_countries = '';
+  let production_company = movie.production_companies[0]
+    ? movie.production_companies[0].name
+    : '';
+  let genres = '';
+
+  if (movie.productions_countries) {
+    movie.production_countries.map(
+      country => (production_countries += `${country.iso_3166_1 || ''} `)
+    );
+  }
+  if (movie.genres) {
+    movie.genres.map(genre => (genres += `${genre.name || ''} `));
+  }
+
+  let message = {
+    response_type: 'in_channel',
+    replace_original: false,
+    text: `\t${movie.release_date
+      ? `📽️ Date: ${movie.release_date} |`
+      : ''} ${movie.original_language
+      ? `Lang: ${movie.original_language.toUpperCase()} |`
+      : ''}  ${movie.runtime
+      ? `Runtime: ${movie.runtime} mins `
+      : ''} ${production_company ? `| ${production_company}` : ''}`,
+    attachments: [
+      {
+        fallback: 'Unable to search that movie',
+        callback_id: 'search',
+        image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+        color: '#d52e43',
+        attachment_type: 'default',
+        title: `${movie.title}`,
+        title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
+        text: `${movie.tagline
+          ? `${movie.tagline} | `
+          : ''}${production_countries ? `${production_countries}` : ''}${genres
+          ? ` | ${genres}`
+          : ''}\n${movie.overview}`,
+        actions: []
+      }
+    ]
+  };
+
+  return message;
 }
 
 // Format Search Data
@@ -98,14 +145,6 @@ function formatSearchData(movie, search) {
     ]
   };
 
-  tempMovie = Object.assign({}, message);
-  tempMovie.response_type = 'in_channel';
-  tempMovie.replace_original = false;
-  tempMovie.attachments.color = '#D52E43';
-  delete tempMovie.attachments.actions;
-  console.log(tempMovie.attachments);
-  console.log('copying and modifying objects');
-
   return message;
 }
 
@@ -133,6 +172,23 @@ function getRandomMovie(movies, popular) {
     let keys = Array.from(movies.keys());
     return keys[Math.floor(Math.random() * keys.length)];
   }
+}
+
+// Get movie from search and post public
+function getMoviePublic(movie, popular = false) {
+  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
+  return fetch(searchQuery)
+    .then(res => res.json())
+    .then(json =>
+      fetch(
+        `https://api.themoviedb.org/3/movie/${json.results[
+          getRandomMovie(json.results, popular)
+        ].id}?api_key=${apiKey}`
+      )
+    )
+    .then(res => res.json())
+    .then(data => formatSearchPublicData(data, movie))
+    .catch(err => console.log(err));
 }
 
 // Get movie from search
@@ -308,16 +364,11 @@ router.post('/actions', urlencodedParser, (req, res) => {
     });
   } else if (optionName == 'post') {
     //let movieHook = 'https://hooks.slack.com/services/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';
-    console.log('Payload => ' + actionJSONPayload.response_url);
-    console.log('tempMovie =>' + tempMovie);
-    let weebhook = getWebhookByChannel(channel);
-    console.log('Webhook =>' + webhook);
-    console.log(webhook);
-    let temphook =
-      'https://hooks.slack.com/services/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';
-    //sendMessageToSlackResponseURL(webhook, tempMovie);
+    getMoviePublic(optionValue, false).then(message => {
+      sendMessageToSlackResponseURL(getWebhookByChannel(channel), message);
+    });
+
     sendMessageToSlackResponseURL(getWebhookByChannel(channel), tempMovie);
-    //sendMessageToSlackResponseURL(movieHook, tempMovie);
   }
 });
 
