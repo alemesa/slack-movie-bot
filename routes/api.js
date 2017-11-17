@@ -175,7 +175,7 @@ function getRandomMovie(movies, popular) {
 }
 
 // Get movie from search and post public
-function getMoviePublic(movie, popular = false) {
+function getMoviePublic(movie, popular = true) {
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
   return fetch(searchQuery)
     .then(res => res.json())
@@ -367,8 +367,6 @@ router.post('/actions', urlencodedParser, (req, res) => {
     getMoviePublic(optionValue, false).then(message => {
       sendMessageToSlackResponseURL(getWebhookByChannel(channel), message);
     });
-
-    sendMessageToSlackResponseURL(getWebhookByChannel(channel), tempMovie);
   }
 });
 
