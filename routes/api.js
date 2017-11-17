@@ -316,6 +316,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
     console.log('tempMovie =>' + tempMovie);
     let weebhook = getWebhookByChannel(channel);
     console.log('Webhook =>' + webhook);
+    console.log(weebhook);
 
     sendMessageToSlackResponseURL(webhook, tempMovie);
     //sendMessageToSlackResponseURL(movieHook, tempMovie);
