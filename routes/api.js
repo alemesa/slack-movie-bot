@@ -298,10 +298,12 @@ router.post('/actions', urlencodedParser, (req, res) => {
 
 //!-------AUTH PROCESS-------!
 router.get('/auth', (req, res) => {
+  console.log('Going to /Auth');
   res.sendFile(__dirname + '/public/index.html');
 });
 
 router.get('/auth/redirect', (req, res) => {
+  console.log('Going to /Auth/Redirect');
   var options = {
     uri:
       'https://slack.com/api/oauth.access?code=' +
