@@ -170,6 +170,26 @@ function getMoviePublic(movie) {
     .catch(err => console.log(err));
 }
 
+function showErrorMessage() {
+  let message = {
+    response_type: 'ephemeral',
+    replace_original: true,
+    text: `Noooo`,
+    attachments: [
+      {
+        fallback: 'Unable to find that movie',
+        callback_id: 'error',
+        color: '#f44336',
+        attachment_type: 'default',
+        title: `Error 😢`,
+        text: `That movie doesn't exists on the database`
+      }
+    ]
+  };
+
+  return message;
+}
+
 // Get movie from search
 function getMovie(movie, popular = true) {
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
@@ -184,7 +204,10 @@ function getMovie(movie, popular = true) {
     )
     .then(res => res.json())
     .then(data => formatSearchData(data, movie))
-    .catch(err => console.log(err));
+    .catch(err => {
+      showErrorMessage();
+      console.log(err);
+    });
 }
 
 // Get next movie from the JSON Calendar
