@@ -263,7 +263,7 @@ function getPreviousMovies(visible = false) {
       }
     ]
   };
-
+  console.log(message);
   return message;
 }
 
