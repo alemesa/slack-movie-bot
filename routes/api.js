@@ -320,7 +320,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
     let temphook =
       'https://hooks.slack.com/services/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';
     //sendMessageToSlackResponseURL(webhook, tempMovie);
-    sendMessageToSlackResponseURL(temphook, tempMovie);
+    sendMessageToSlackResponseURL(getWebhookByChannel(channel), tempMovie);
     //sendMessageToSlackResponseURL(movieHook, tempMovie);
   }
 });
