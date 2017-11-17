@@ -22,9 +22,21 @@ let pastMovies = movies.data.filter(movie => moment(movie.date) < moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
+let webhook = {};
+let webhookMap = new Map();
 
 // API stuff
 const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
+
+// Get channel
+function getWebhookByChannel(channel) {
+  for (var [key, value] of webhookMap) {
+    console.log(key + ' = ' + value);
+    if (key == channel) {
+      return value;
+    }
+  }
+}
 
 // Copying temporal movie
 function copyMovie(message) {
@@ -280,7 +292,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
   var actionJSONPayload = JSON.parse(req.body.payload);
   let optionName = actionJSONPayload.actions[0].name;
   let optionValue = actionJSONPayload.actions[0].value;
-  console.log(req);
+  let channel = actionJSONPayload.channel.id;
 
   if (optionName == 'previous') {
     let message = getPreviousMovies();
@@ -297,11 +309,13 @@ router.post('/actions', urlencodedParser, (req, res) => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'post') {
-    let movieHook =
-      'https://hooks.slack.com/services/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';
+    //let movieHook = 'https://hooks.slack.com/services/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';
     console.log(actionJSONPayload.response_url);
     console.log(tempMovie);
-    sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
+    let weebhook = getWebhookByChannel(channel);
+    console.log(webhook);
+
+    sendMessageToSlackResponseURL(webhook, tempMovie);
     //sendMessageToSlackResponseURL(movieHook, tempMovie);
   }
 });
@@ -336,6 +350,10 @@ router.get('/auth/redirect', (req, res) => {
         .end();
     } else {
       console.log(JSONresponse);
+      webhookMap.set(
+        JSONresponse.incoming_webhook.channel_id,
+        JSONresponse.incoming_webhook.url
+      );
       res.send('Success!');
     }
   });
