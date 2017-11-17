@@ -133,7 +133,7 @@ function formatSearchData(movie, search) {
             name: 'post',
             text: 'Post Public',
             type: 'button',
-            value: `${search}`
+            value: `${movie.id}`
           },
           {
             name: 'shuffle',
@@ -176,17 +176,8 @@ function getRandomMovie(movies, popular) {
 }
 
 // Get movie from search and post public
-function getMoviePublic(movie, popular = true) {
-  const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
-  return fetch(searchQuery)
-    .then(res => res.json())
-    .then(json =>
-      fetch(
-        `https://api.themoviedb.org/3/movie/${json.results[
-          getRandomMovie(json.results, popular)
-        ].id}?api_key=${apiKey}`
-      )
-    )
+function getMoviePublic(movie) {
+  return fetch(`https://api.themoviedb.org/3/movie/${movie}?api_key=${apiKey}`)
     .then(res => res.json())
     .then(data => formatSearchPublicData(data, movie))
     .catch(err => console.log(err));
@@ -366,7 +357,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
   } else if (optionName == 'post') {
     //let movieHook = 'https://hooks.slack.com/services/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';
     console.log(optionValue);
-    getMoviePublic(optionValue, true).then(message => {
+    getMoviePublic(optionValue).then(message => {
       //sendMessageToSlackResponseURL(getWebhookByChannel(channel), message);
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
