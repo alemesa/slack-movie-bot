@@ -21,22 +21,9 @@ let variables = JSON.parse(fs.readFileSync('./data/vars.json'));
 let pastMovies = movies.data.filter(movie => moment(movie.date) < moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
-let webhook = {};
-let webhookMap = new Map();
 
 // API stuff
 const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
-
-// Get channel
-function getWebhookByChannel(channel) {
-  for (var [key, value] of webhookMap) {
-    console.log(key + ' = ' + value);
-    if (key == channel) {
-      console.log('Inside the webhook get function ' + value);
-      return value;
-    }
-  }
-}
 
 // Format Public Search Data
 function formatSearchPublicData(movie, search) {
@@ -242,8 +229,16 @@ function getNextMovie() {
   return message;
 }
 
-function getPreviousMovies() {
+function getPreviousMovies(visible = false) {
   let text = '';
+  let actions = [
+    {
+      name: 'post-previous',
+      text: 'Post Public',
+      type: 'button',
+      value: `post-previous`
+    }
+  ];
 
   // get last 10 items
   pastMovies
@@ -256,14 +251,15 @@ function getPreviousMovies() {
     });
 
   let message = {
-    response_type: 'ephemeral',
+    response_type: `${visible ? 'in_channel' : 'ephemeral'}`,
     text: `Previous Movies`,
     replace_original: false,
     attachments: [
       {
         text: `${text}${variables.suggestion}`,
         callback_id: 'past',
-        color: '#000000'
+        color: '#000000',
+        actions: `${visible ? '' : actions}`
       }
     ]
   };
@@ -271,8 +267,18 @@ function getPreviousMovies() {
   return message;
 }
 
-function getFutureMovies() {
+function getFutureMovies(visible = false) {
   let text = '';
+
+  let actions = [
+    {
+      name: 'post-future',
+      text: 'Post Public',
+      type: 'button',
+      value: `post-future`
+    }
+  ];
+
   futureMovies.map(movie => {
     text += `- ${movie.name} (${movie.year}) - ${movie.director} - ${moment(
       movie.date
@@ -280,14 +286,15 @@ function getFutureMovies() {
   });
 
   let message = {
-    response_type: 'ephemeral',
+    response_type: `${visible ? 'in_channel' : 'ephemeral'}`,
     text: `Future Movies`,
     replace_original: false,
     attachments: [
       {
         text: `${text}${variables.suggestion}`,
         callback_id: 'future',
-        color: '#000000'
+        color: '#000000',
+        actions: `${visible ? '' : actions}`
       }
     ]
   };
@@ -306,7 +313,7 @@ function displayError() {
 // Return the movies as json (REST-API)
 router.get('/api/movies', (req, res) => {
   //res.send(movies);
-  console.log('Getting Movies');
+  console.log('REST GET Getting Movies');
 });
 
 // Handle POST request form '/movie' slash command
@@ -338,7 +345,6 @@ router.post('/actions', urlencodedParser, (req, res) => {
   var actionJSONPayload = JSON.parse(req.body.payload);
   let optionName = actionJSONPayload.actions[0].name;
   let optionValue = actionJSONPayload.actions[0].value;
-  let channel = actionJSONPayload.channel.id;
 
   if (optionName == 'previous') {
     let message = getPreviousMovies();
@@ -355,12 +361,15 @@ router.post('/actions', urlencodedParser, (req, res) => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
   } else if (optionName == 'post') {
-    //let movieHook = 'https://hooks.slack.com/services/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';
-    console.log(optionValue);
     getMoviePublic(optionValue).then(message => {
-      //sendMessageToSlackResponseURL(getWebhookByChannel(channel), message);
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
+  } else if (optionName == 'post-previous') {
+    let message = getPreviousMovies(true); // get previous movie according to calendar
+    sendMessageToSlackResponseURL(responseURL, message);
+  } else if (optionName == 'post-future') {
+    let message = getFutureMovies(true); // get previous movie according to calendar
+    sendMessageToSlackResponseURL(responseURL, message);
   }
 });
 
@@ -394,10 +403,6 @@ router.get('/auth/redirect', (req, res) => {
         .end();
     } else {
       console.log(JSONresponse);
-      webhookMap.set(
-        JSONresponse.incoming_webhook.channel_id,
-        JSONresponse.incoming_webhook.url
-      );
       res.send('Success!');
     }
   });
