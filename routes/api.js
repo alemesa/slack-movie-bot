@@ -103,7 +103,7 @@ function formatSearchData(movie, search) {
   tempMovie.replace_original = false;
   tempMovie.attachments.color = '#D52E43';
   delete tempMovie.attachments.actions;
-  console.log(tempMovie);
+  console.log(tempMovie.attachments);
   console.log('copying and modifying objects');
 
   return message;
