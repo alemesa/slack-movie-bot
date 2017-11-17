@@ -68,12 +68,12 @@ function formatSearchData(movie, search) {
           ? ` | ${genres}`
           : ''}\n${movie.overview}`,
         actions: [
-          {
-            name: 'post',
-            text: 'Post Public on #movie-night',
-            type: 'button',
-            value: 'post'
-          },
+          // {
+          //   name: 'post',
+          //   text: 'Post Public on #movie-night',
+          //   type: 'button',
+          //   value: 'post'
+          // },
           {
             name: 'shuffle',
             text: 'Shuffle Movie',
