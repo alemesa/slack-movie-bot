@@ -366,7 +366,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
   } else if (optionName == 'post') {
     //let movieHook = 'https://hooks.slack.com/services/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';
     console.log(optionValue);
-    getMoviePublic(optionValue, false).then(message => {
+    getMoviePublic(optionValue, true).then(message => {
       sendMessageToSlackResponseURL(getWebhookByChannel(channel), message);
     });
   }
