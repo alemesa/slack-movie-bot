@@ -102,7 +102,8 @@ function formatSearchData(movie, search) {
   tempMovie.response_type = 'in_channel';
   tempMovie.replace_original = false;
   tempMovie.attachments.color = '#D52E43';
-  tempMovie.attachments.actions = '';
+  delete tempMovie.attachments.actions;
+  console.log(tempMovie);
   console.log('copying and modifying objects');
 
   return message;
