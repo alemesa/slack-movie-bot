@@ -98,7 +98,7 @@ function formatSearchData(movie, search) {
     ]
   };
 
-  tempMovie = Object.assign({}, obj);
+  tempMovie = Object.assign({}, message);
   tempMovie.response_type = 'in_channel';
   tempMovie.replace_original = false;
   tempMovie.attachments.color = '#D52E43';
