@@ -68,12 +68,12 @@ function formatSearchData(movie, search) {
           ? ` | ${genres}`
           : ''}\n${movie.overview}`,
         actions: [
-          // {
-          //   name: 'post',
-          //   text: 'Post Public on #movie-night',
-          //   type: 'button',
-          //   value: 'post'
-          // },
+          {
+            name: 'post',
+            text: 'Post Public',
+            type: 'button',
+            value: 'post'
+          },
           {
             name: 'shuffle',
             text: 'Shuffle Movie',
@@ -85,7 +85,7 @@ function formatSearchData(movie, search) {
     ]
   };
   tempMovie = message;
-  tempMovie.response_type = 'ephemeral';
+  tempMovie.response_type = 'in_channel';
   tempMovie.replace_original = true;
   tempMovie.attachments.color = `${variables.errorColor}`;
   tempMovie.attachments.actions = '';
@@ -293,7 +293,10 @@ router.post('/actions', urlencodedParser, (req, res) => {
   } else if (optionName == 'post') {
     let movieHook =
       'https://hooks.slack.com/services/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';
-    sendMessageToSlackResponseURL(movieHook, tempMovie);
+    console.log(actionJSONPayload);
+    console.log(actionJSONPayload.response_url);
+    sendMessageToSlackResponseURL(actionJSONPayload.response_url, tempMovie);
+    //sendMessageToSlackResponseURL(movieHook, tempMovie);
   }
 });
 
