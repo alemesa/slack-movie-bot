@@ -300,7 +300,8 @@ router.post('/actions', urlencodedParser, (req, res) => {
 //!-------AUTH PROCESS-------!
 router.get('/auth', (req, res) => {
   console.log('Going to /Auth');
-  res.sendFile(__dirname + '/public/index.html');
+  //res.sendFile(__dirname + '/public/index.html');
+  res.sendFile('https://slack-movie-bot-jam3.herokuapp.com/');
 });
 
 router.get('/auth/redirect', (req, res) => {
