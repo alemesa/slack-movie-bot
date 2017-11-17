@@ -317,8 +317,10 @@ router.post('/actions', urlencodedParser, (req, res) => {
     let weebhook = getWebhookByChannel(channel);
     console.log('Webhook =>' + webhook);
     console.log(webhook);
-
-    sendMessageToSlackResponseURL(webhook, tempMovie);
+    let temphook =
+      'https://hooks.slack.com/services/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';
+    //sendMessageToSlackResponseURL(webhook, tempMovie);
+    sendMessageToSlackResponseURL(temphook, tempMovie);
     //sendMessageToSlackResponseURL(movieHook, tempMovie);
   }
 });
