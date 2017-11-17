@@ -33,7 +33,7 @@ function getWebhookByChannel(channel) {
   for (var [key, value] of webhookMap) {
     console.log(key + ' = ' + value);
     if (key == channel) {
-      console.log(value);
+      console.log('Inside the webhook get function ' + value);
       return value;
     }
   }
@@ -46,6 +46,7 @@ function copyMovie(message) {
   tempMovie.replace_original = false;
   tempMovie.attachments.color = '#D52E43';
   tempMovie.attachments.actions = '';
+  console.log('Copy all values from movie to temp');
 }
 
 // Format Search Data
@@ -311,10 +312,10 @@ router.post('/actions', urlencodedParser, (req, res) => {
     });
   } else if (optionName == 'post') {
     //let movieHook = 'https://hooks.slack.com/services/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';
-    console.log(actionJSONPayload.response_url);
-    console.log(tempMovie);
+    console.log('Payload => ' + actionJSONPayload.response_url);
+    console.log('tempMovie =>' + tempMovie);
     let weebhook = getWebhookByChannel(channel);
-    console.log(webhook);
+    console.log('Webhook =>' + webhook);
 
     sendMessageToSlackResponseURL(webhook, tempMovie);
     //sendMessageToSlackResponseURL(movieHook, tempMovie);
