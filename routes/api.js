@@ -22,7 +22,7 @@ let pastMovies = movies.data.filter(movie => moment(movie.date) < moment());
 let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
 let nextMovie = futureMovies[0];
 let tempMovie = {};
-let webhook = {};
+let webhook = '';
 let webhookMap = new Map();
 
 // API stuff
