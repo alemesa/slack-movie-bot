@@ -207,11 +207,11 @@ function formatPopularData(data) {
         callback_id: 'popular',
         color: `${variables.privateColor}`,
         attachment_type: 'default',
-        text: `${outputText}`
+        text: `Output Text: ${outputText}`
       }
     ]
   };
-
+  console.log(message);
   return message;
 }
 
