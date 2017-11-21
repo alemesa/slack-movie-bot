@@ -192,7 +192,7 @@ function showErrorMessage() {
 }
 
 function formatPopularData(data) {
-  let outputText;
+  let outputText = '';
   data.map(
     movie => (outputText += `${movie.original_title} - ${movie.release_date}\n`)
   );
@@ -393,7 +393,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (bodyText == 'popular') {
     let message = getPopular(); // get popular movies
-    console.log(message);
+    console.log('Get Popular ' + message);
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
     getMovie(bodyText, true)
