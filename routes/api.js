@@ -197,9 +197,8 @@ function formatPopularData(data) {
     .filter((movie, index) => index < 10)
     .map(
       (movie, index) =>
-        (outputText += `${index + 1} -  ${movie.original_title.padStart(
-          3
-        )} 🎥   |  ${movie.release_date.padStart(25)} 📆\n`)
+        (outputText += `${index +
+          1} -  ${movie.original_title} 🎞️  |  ${movie.release_date} 📆\n`)
     );
 
   let message = {
