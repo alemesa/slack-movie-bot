@@ -338,7 +338,7 @@ function displayError() {
 // Return the movies as json (REST-API)
 router.get('/api/movies', (req, res) => {
   //res.send(movies);
-  console.log('REST GET Getting Movies');
+  console.log('REST Route GET Getting Movies');
 });
 
 // Handle POST request form '/movie' slash command
