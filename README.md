@@ -42,9 +42,16 @@ Possible Commands:
 
 ---
 
+* `/movie popular` - Post 10 most popular & searched movies
+<div align="center">
+<img width="80%" src="./screenshots/movie_popular.png">
+</div>
+
+---
+
 To-Do Future
 - [ ] Pull next movie poster from the API
-- [ ] Add `/movie popular` - show the 10 most popular movies
+- [x] Add `/movie popular` - show the 10 most popular movies
 - [ ] Add a frontend to add designer posters and use that data for the `/movie` poster => requires node uploader
 - [ ] Pull the movie name from a calendar => requires workaround with the Google Calendar API and Auth Config
 
@@ -57,8 +64,9 @@ These links are useful:
 - [The Movie DB Docs](https://www.themoviedb.org/documentation/api)
 - [Creating Slack Command](https://tutorials.botsfloor.com/creating-a-slack-command-bot-from-scratch-with-node-js-distribute-it-25cf81f51040)
 - [Basic Messaging (Slack)](https://api.slack.com/docs/messages)
-- [Google Calendar API](https://developers.google.com/google-apps/calendar/)
-- [Google Calendar Node Quickstart](https://developers.google.com/google-apps/calendar/quickstart/nodejs)
+- Others
+    - [Google Calendar API](https://developers.google.com/google-apps/calendar/)
+    - [Google Calendar Node Quickstart](https://developers.google.com/google-apps/calendar/quickstart/nodejs)
 
 * First configure Slack
 ```bash
