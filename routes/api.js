@@ -194,7 +194,6 @@ function showErrorMessage() {
 // Get 10 most popular movies
 function getPopular() {
   let searchQuery = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc`;
-  let popularMovies = {};
   return fetch(searchQuery)
     .then(res => res.json())
     .then(json => json.results)
@@ -203,7 +202,6 @@ function getPopular() {
         fetch(`https://api.themoviedb.org/3/movie/${pop.id}?api_key=${apiKey}`)
           .then(res => res.json)
           .then(movie => {
-            popularMovies.push([movie.imdb_id, movie.original_title]);
             console.log(movie.imdb_id + movie.original_title);
           })
       );
