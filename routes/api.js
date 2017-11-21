@@ -191,21 +191,39 @@ function showErrorMessage() {
   return message;
 }
 
+function formatPopularData(data) {
+  let outputText;
+  data.map(
+    movie =>
+      (outputText += `${movie.original_title} - ${movie.release_date} -(${original_language})\n`)
+  );
+
+  let message = {
+    response_type: 'ephemeral',
+    replace_original: true,
+    text: `\tPopular Movies`,
+    attachments: [
+      {
+        fallback: 'Unable to search popular movies',
+        callback_id: 'popular',
+        color: `${variables.privateColor}`,
+        attachment_type: 'default',
+        text: `${outputText}`
+      }
+    ]
+  };
+
+  return message;
+}
+
 // Get 10 most popular movies
 function getPopular() {
   let searchQuery = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc`;
   return fetch(searchQuery)
     .then(res => res.json())
     .then(json => json.results)
-    .then(data => {
-      data.map(pop =>
-        fetch(`https://api.themoviedb.org/3/movie/${pop.id}?api_key=${apiKey}`)
-          .then(res => res.json)
-          .then(movie => {
-            console.log(movie.imdb_id + movie.original_title);
-          })
-      );
-    });
+    .then(data => formatPopularData(data))
+    .catch(err => console.log(err));
 }
 
 // Get movie from search
