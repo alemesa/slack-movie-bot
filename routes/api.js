@@ -191,6 +191,17 @@ function showErrorMessage() {
   return message;
 }
 
+// Get 10 most popular movies
+function getPopular() {
+  let searchQuery = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc`;
+  return fetch(searchQuery)
+    .then(res => res.json())
+    .then(json => json.results)
+    .then(data => {
+      data.map(pop => console.log(pop.original_title));
+    });
+}
+
 // Get movie from search
 function getMovie(movie, popular = true) {
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
@@ -356,6 +367,9 @@ router.post('/movie', urlencodedParser, (req, res) => {
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (bodyText == 'future') {
     let message = getFutureMovies(false); // get future movie according to calendar
+    sendMessageToSlackResponseURL(responseURL, message);
+  } else if (bodyText == 'popular') {
+    let message = getPopular(); // get popular movies
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
     getMovie(bodyText, true)
