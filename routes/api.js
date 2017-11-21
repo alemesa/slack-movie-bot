@@ -198,7 +198,7 @@ function formatPopularData(data) {
     .map(
       (movie, index) =>
         (outputText += `${index +
-          1}  ${movie.original_title} - ${movie.release_date}\n`)
+          1} -  ${movie.original_title} 🎥   |  📆${movie.release_date}\n`)
     );
 
   let message = {
@@ -211,7 +211,7 @@ function formatPopularData(data) {
         callback_id: 'popular',
         color: '#FFEB3B',
         attachment_type: 'default',
-        text: `10 Most researched movies on our database:\n ${outputText}`
+        text: `Most researched movies on our database:\n ${outputText}`
       }
     ]
   };
