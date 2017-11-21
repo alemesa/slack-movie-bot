@@ -207,7 +207,7 @@ function formatPopularData(data) {
         callback_id: 'popular',
         color: `${variables.privateColor}`,
         attachment_type: 'default',
-        text: `Output Text: ${outputText}`
+        text: `Output Text:\n ${outputText}`
       }
     ]
   };
@@ -393,6 +393,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (bodyText == 'popular') {
     let message = getPopular(); // get popular movies
+    console.log(message);
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
     getMovie(bodyText, true)
