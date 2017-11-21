@@ -196,7 +196,7 @@ function formatPopularData(data) {
   data
     .filter((movie, index) => index < 10)
     .map(
-      movie =>
+      (movie, index) =>
         (outputText += `${index +
           1}  ${movie.original_title} - ${movie.release_date}\n`)
     );
