@@ -171,6 +171,8 @@ function getMoviePublic(movie) {
 }
 
 function showErrorMessage() {
+  console.log('inside the error message function');
+
   let message = {
     response_type: 'ephemeral',
     replace_original: true,
@@ -205,6 +207,7 @@ function getMovie(movie, popular = true) {
     .then(res => res.json())
     .then(data => formatSearchData(data, movie))
     .catch(err => {
+      console.log("couldn't fetch");
       showErrorMessage();
       console.log(err);
     });
