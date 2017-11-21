@@ -153,6 +153,7 @@ function sendMessageToSlackResponseURL(responseURL, JSONmessage) {
   });
 }
 
+// Get RandomMovie
 function getRandomMovie(movies, popular) {
   if (popular) {
     return 0;
@@ -208,8 +209,10 @@ function getMovie(movie, popular = true) {
     .then(data => formatSearchData(data, movie))
     .catch(err => {
       console.log("couldn't fetch");
-      showErrorMessage();
+      let errorMessage = showErrorMessage();
       console.log(err);
+      console.log(errorMessage);
+      return errorMessage;
     });
 }
 
@@ -360,9 +363,13 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getFutureMovies(false); // get future movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else {
-    getMovie(bodyText, true).then(message => {
-      sendMessageToSlackResponseURL(responseURL, message);
-    });
+    getMovie(bodyText, true)
+      .then(message => {
+        sendMessageToSlackResponseURL(responseURL, message);
+      })
+      .catch(errorMessage => {
+        sendMessageToSlackResponseURL(responseURL, errorMessage);
+      });
   }
 });
 
