@@ -57,7 +57,7 @@ function formatSearchPublicData(movie, search) {
         fallback: 'Unable to search that movie',
         callback_id: 'search',
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        color: '#d52e43',
+        color: `${variables.publicColor}`,
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
@@ -106,7 +106,7 @@ function formatSearchData(movie, search) {
         fallback: 'Unable to search that movie',
         callback_id: 'search',
         image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        color: '#3AA3E3',
+        color: `${variables.privateColor}`,
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
@@ -172,20 +172,18 @@ function getMoviePublic(movie) {
 }
 
 function showErrorMessage() {
-  console.log('inside the error message function');
-
   let message = {
     response_type: 'ephemeral',
     replace_original: true,
-    text: `Noooo`,
+    text: `Noooo Why???`,
     attachments: [
       {
         fallback: 'Unable to find that movie',
         callback_id: 'error',
-        color: '#f44336',
+        color: `${variables.errorColor}`,
         attachment_type: 'default',
         title: `Error 😢`,
-        text: `That movie doesn't exists on the database`
+        text: `We couldn't find that movie`
       }
     ]
   };
@@ -208,10 +206,7 @@ function getMovie(movie, popular = true) {
     .then(res => res.json())
     .then(data => formatSearchData(data, movie))
     .catch(err => {
-      console.log("couldn't fetch");
       let errorMessage = showErrorMessage();
-      console.log(err);
-      console.log(errorMessage);
       return errorMessage;
     });
 }
@@ -228,7 +223,7 @@ function getNextMovie() {
       {
         callback_id: 'next',
         text: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
-        color: '#000000',
+        color: `${variables.privateColor}`,
         image_url: `${movies.poster}`,
         footer: `${variables.location} - ${variables.time}`,
         actions: [
@@ -279,7 +274,7 @@ function getPreviousMovies(visible = false) {
       {
         text: `${text}${variables.suggestion}`,
         callback_id: 'past',
-        color: '#000000',
+        color: `${variables.jam3Color}`,
         actions: `${visible
           ? ''
           : [
@@ -314,7 +309,7 @@ function getFutureMovies(visible = false) {
       {
         text: `${text}${variables.suggestion}`,
         callback_id: 'future',
-        color: '#000000',
+        color: `${variables.jam3Color}`,
         actions: `${visible
           ? ''
           : [
