@@ -193,9 +193,12 @@ function showErrorMessage() {
 
 function formatPopularData(data) {
   let outputText = '';
-  data.map(
-    movie => (outputText += `${movie.original_title} - ${movie.release_date}\n`)
-  );
+  data
+    .filter((movie, index) => index < 10)
+    .map(
+      movie =>
+        (outputText += `${movie.original_title} - ${movie.release_date}\n`)
+    );
 
   let message = {
     response_type: 'ephemeral',
@@ -205,9 +208,9 @@ function formatPopularData(data) {
       {
         fallback: 'Unable to search popular movies',
         callback_id: 'popular',
-        color: `${variables.privateColor}`,
+        color: '#FFEB3B',
         attachment_type: 'default',
-        text: `Output Text:\n ${outputText}`
+        text: `Most researched movies on our database:\n ${outputText}`
       }
     ]
   };
