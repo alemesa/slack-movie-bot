@@ -392,9 +392,13 @@ router.post('/movie', urlencodedParser, (req, res) => {
     let message = getFutureMovies(false); // get future movie according to calendar
     sendMessageToSlackResponseURL(responseURL, message);
   } else if (bodyText == 'popular') {
-    let message = getPopular(); // get popular movies
-    console.log('Get Popular ' + message);
-    sendMessageToSlackResponseURL(responseURL, message);
+    getPopular()
+      .then(message => {
+        sendMessageToSlackResponseURL(responseURL, message);
+      })
+      .catch(errorMessage => {
+        console.log(errorMessage);
+      });
   } else {
     getMovie(bodyText, true)
       .then(message => {
