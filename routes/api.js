@@ -194,8 +194,7 @@ function showErrorMessage() {
 function formatPopularData(data) {
   let outputText;
   data.map(
-    movie =>
-      (outputText += `${movie.original_title} - ${movie.release_date} -(${original_language})\n`)
+    movie => (outputText += `${movie.original_title} - ${movie.release_date}\n`)
   );
 
   let message = {
