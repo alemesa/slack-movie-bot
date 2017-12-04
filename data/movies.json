@@ -34,9 +34,16 @@
       "director": "Hayao Miyazaki",
       "date": "2017-11-28",
       "designer": "Serene"
+    },
+    {
+      "name": "The Nightmare before Christmas",
+      "year": "1997",
+      "director": "Tim Burton",
+      "date": "2017-12-05",
+      "designer": "John"
     }
   ],
   "poster":
-    "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/5aac7714895269.5628a5b7b8327.jpg",
+    "http://www.ruthlessreviews.com/wp-content/uploads/2013/12/nightmare-meta.jpg",
   "designerPoster": ""
 }
