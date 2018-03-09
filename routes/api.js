@@ -13,30 +13,17 @@ const CLIENT_SECRET = '0ddef22b6dcbc4ac8a5f85d7de70489b';
 const REDIRECT_URI = 'https://slack-movie-bot-jam3.herokuapp.com/auth/redirect';
 const VERIFICATION_TOKEN = '';
 
-// Getting local JSON Data
-let movies = JSON.parse(fs.readFileSync('./data/movies.json'));
-let variables = JSON.parse(fs.readFileSync('./data/vars.json'));
-
-// define movies
-let pastMovies = movies.data.filter(movie => moment(movie.date) < moment());
-let futureMovies = movies.data.filter(movie => moment(movie.date) >= moment());
-let nextMovie = futureMovies[0];
-
 // API stuff
 const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
 
 // Format Public Search Data
 function formatSearchPublicData(movie, search) {
   let production_countries = '';
-  let production_company = movie.production_companies[0]
-    ? movie.production_companies[0].name
-    : '';
+  let production_company = movie.production_companies[0] ? movie.production_companies[0].name : '';
   let genres = '';
 
   if (movie.productions_countries) {
-    movie.production_countries.map(
-      country => (production_countries += `${country.iso_3166_1 || ''} `)
-    );
+    movie.production_countries.map(country => (production_countries += `${country.iso_3166_1 || ''} `));
   }
   if (movie.genres) {
     movie.genres.map(genre => (genres += `${genre.name || ''} `));
@@ -45,13 +32,9 @@ function formatSearchPublicData(movie, search) {
   let message = {
     response_type: 'in_channel',
     replace_original: false,
-    text: `\t${movie.release_date
-      ? `📽️ Date: ${movie.release_date} |`
-      : ''} ${movie.original_language
-      ? `Lang: ${movie.original_language.toUpperCase()} |`
-      : ''}  ${movie.runtime
-      ? `Runtime: ${movie.runtime} mins `
-      : ''} ${production_company ? `| ${production_company}` : ''}`,
+    text: `\t${movie.release_date ? `📽️ Date: ${movie.release_date} |` : ''} ${
+      movie.original_language ? `Lang: ${movie.original_language.toUpperCase()} |` : ''
+    }  ${movie.runtime ? `Runtime: ${movie.runtime} mins ` : ''} ${production_company ? `| ${production_company}` : ''}`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -61,11 +44,9 @@ function formatSearchPublicData(movie, search) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline
-          ? `${movie.tagline} | `
-          : ''}${production_countries ? `${production_countries}` : ''}${genres
-          ? ` | ${genres}`
-          : ''}\n${movie.overview}`,
+        text: `${movie.tagline ? `${movie.tagline} | ` : ''}${production_countries ? `${production_countries}` : ''}${
+          genres ? ` | ${genres}` : ''
+        }\n${movie.overview}`,
         actions: []
       }
     ]
@@ -77,15 +58,11 @@ function formatSearchPublicData(movie, search) {
 // Format Search Data
 function formatSearchData(movie, search) {
   let production_countries = '';
-  let production_company = movie.production_companies[0]
-    ? movie.production_companies[0].name
-    : '';
+  let production_company = movie.production_companies[0] ? movie.production_companies[0].name : '';
   let genres = '';
 
   if (movie.productions_countries) {
-    movie.production_countries.map(
-      country => (production_countries += `${country.iso_3166_1 || ''} `)
-    );
+    movie.production_countries.map(country => (production_countries += `${country.iso_3166_1 || ''} `));
   }
   if (movie.genres) {
     movie.genres.map(genre => (genres += `${genre.name || ''} `));
@@ -94,13 +71,9 @@ function formatSearchData(movie, search) {
   let message = {
     response_type: 'ephemeral',
     replace_original: true,
-    text: `\t${movie.release_date
-      ? `📽️ Date: ${movie.release_date} |`
-      : ''} ${movie.original_language
-      ? `Lang: ${movie.original_language.toUpperCase()} |`
-      : ''}  ${movie.runtime
-      ? `Runtime: ${movie.runtime} mins `
-      : ''} ${production_company ? `| ${production_company}` : ''}`,
+    text: `\t${movie.release_date ? `📽️ Date: ${movie.release_date} |` : ''} ${
+      movie.original_language ? `Lang: ${movie.original_language.toUpperCase()} |` : ''
+    }  ${movie.runtime ? `Runtime: ${movie.runtime} mins ` : ''} ${production_company ? `| ${production_company}` : ''}`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -110,11 +83,9 @@ function formatSearchData(movie, search) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline
-          ? `${movie.tagline} | `
-          : ''}${production_countries ? `${production_countries}` : ''}${genres
-          ? ` | ${genres}`
-          : ''}\n${movie.overview}`,
+        text: `${movie.tagline ? `${movie.tagline} | ` : ''}${production_countries ? `${production_countries}` : ''}${
+          genres ? ` | ${genres}` : ''
+        }\n${movie.overview}`,
         actions: [
           {
             name: 'post',
@@ -195,11 +166,7 @@ function formatPopularData(data) {
   let outputText = '';
   data
     .filter((movie, index) => index < 10)
-    .map(
-      (movie, index) =>
-        (outputText += `${index +
-          1} -  ${movie.original_title} 🎞️  |  ${movie.release_date} 📆\n`)
-    );
+    .map((movie, index) => (outputText += `${index + 1} -  ${movie.original_title} 🎞️  |  ${movie.release_date} 📆\n`));
 
   let message = {
     response_type: 'ephemeral',
@@ -234,135 +201,13 @@ function getMovie(movie, popular = true) {
   const searchQuery = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movie}`;
   return fetch(searchQuery)
     .then(res => res.json())
-    .then(json =>
-      fetch(
-        `https://api.themoviedb.org/3/movie/${json.results[
-          getRandomMovie(json.results, popular)
-        ].id}?api_key=${apiKey}`
-      )
-    )
+    .then(json => fetch(`https://api.themoviedb.org/3/movie/${json.results[getRandomMovie(json.results, popular)].id}?api_key=${apiKey}`))
     .then(res => res.json())
     .then(data => formatSearchData(data, movie))
     .catch(err => {
       let errorMessage = showErrorMessage();
       return errorMessage;
     });
-}
-
-// Get next movie from the JSON Calendar
-function getNextMovie() {
-  let message = {
-    response_type: 'ephemeral',
-    replace_original: false,
-    text: `📽️ Next Movie: ${nextMovie.name} (${nextMovie.year}) - ${nextMovie.director} - ${moment(
-      nextMovie.date
-    ).format('ddd, Do MMMM')}`,
-    attachments: [
-      {
-        callback_id: 'next',
-        text: `Poster by ${nextMovie.designer} / Join #movie-night for more info`,
-        color: `${variables.privateColor}`,
-        image_url: `${movies.poster}`,
-        footer: `${variables.location} - ${variables.time}`,
-        actions: [
-          {
-            name: 'previous',
-            text: 'Previous Movies',
-            type: 'button',
-            value: 'previous'
-          },
-          {
-            name: 'future',
-            text: 'Future Movies',
-            type: 'button',
-            value: 'future'
-          },
-          {
-            name: `info`,
-            text: 'More Info',
-            type: 'button',
-            value: `${nextMovie.name}`
-          }
-        ]
-      }
-    ]
-  };
-
-  return message;
-}
-
-function getPreviousMovies(visible = false) {
-  let text = '';
-
-  // get last 10 items
-  pastMovies
-    .slice(-10)
-    .reverse()
-    .map(movie => {
-      text += `- ${movie.name} (${movie.year}) - ${movie.director} - ${moment(
-        movie.date
-      ).format('ddd, Do MMMM')}\n`;
-    });
-
-  let message = {
-    response_type: `${visible ? 'in_channel' : 'ephemeral'}`,
-    text: `Previous Movies`,
-    replace_original: false,
-    attachments: [
-      {
-        text: `${text}${variables.suggestion}`,
-        callback_id: 'past',
-        color: `${variables.jam3Color}`,
-        actions: `${visible
-          ? ''
-          : [
-              {
-                name: 'post-previous',
-                text: 'Post Public',
-                type: 'button',
-                value: 'post-previous'
-              }
-            ]}`
-      }
-    ]
-  };
-
-  return message;
-}
-
-function getFutureMovies(visible = false) {
-  let text = '';
-
-  futureMovies.map(movie => {
-    text += `- ${movie.name} (${movie.year}) - ${movie.director} - ${moment(
-      movie.date
-    ).format('ddd, Do MMMM')}\n`;
-  });
-
-  let message = {
-    response_type: `${visible ? 'in_channel' : 'ephemeral'}`,
-    text: `Future Movies`,
-    replace_original: false,
-    attachments: [
-      {
-        text: `${text}${variables.suggestion}`,
-        callback_id: 'future',
-        color: `${variables.jam3Color}`,
-        actions: `${visible
-          ? ''
-          : [
-              {
-                name: 'post-future',
-                text: 'Post Public',
-                type: 'button',
-                value: `post-future`
-              }
-            ]}`
-      }
-    ]
-  };
-
-  return message;
 }
 
 function displayError() {
@@ -386,16 +231,7 @@ router.post('/movie', urlencodedParser, (req, res) => {
   var bodyText = body.text;
   var responseURL = body.response_url;
 
-  if (bodyText == '') {
-    let message = getNextMovie(); // get next movie according to the calendar
-    sendMessageToSlackResponseURL(responseURL, message);
-  } else if (bodyText == 'previous') {
-    let message = getPreviousMovies(false); // get previous movie according to calendar
-    sendMessageToSlackResponseURL(responseURL, message);
-  } else if (bodyText == 'future') {
-    let message = getFutureMovies(false); // get future movie according to calendar
-    sendMessageToSlackResponseURL(responseURL, message);
-  } else if (bodyText == 'popular') {
+  if (bodyText == 'popular' || bodyText == '') {
     getPopular()
       .then(message => {
         sendMessageToSlackResponseURL(responseURL, message);
@@ -421,13 +257,7 @@ router.post('/actions', urlencodedParser, (req, res) => {
   let optionName = actionJSONPayload.actions[0].name;
   let optionValue = actionJSONPayload.actions[0].value;
 
-  if (optionName == 'previous') {
-    let message = getPreviousMovies();
-    sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
-  } else if (optionName == 'future') {
-    let message = getFutureMovies();
-    sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
-  } else if (optionName == 'shuffle') {
+  if (optionName == 'shuffle') {
     getMovie(optionValue, false).then(message => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
@@ -439,12 +269,6 @@ router.post('/actions', urlencodedParser, (req, res) => {
     getMoviePublic(optionValue, true).then(message => {
       sendMessageToSlackResponseURL(actionJSONPayload.response_url, message);
     });
-  } else if (optionName == 'post-previous') {
-    let message = getPreviousMovies(true); // get previous movie according to calendar
-    sendMessageToSlackResponseURL(responseURL, message);
-  } else if (optionName == 'post-future') {
-    let message = getFutureMovies(true); // get previous movie according to calendar
-    sendMessageToSlackResponseURL(responseURL, message);
   }
 });
 

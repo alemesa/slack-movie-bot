@@ -18,8 +18,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // initialize routes
 app.use('/', routes);
 
-// Process the movie info here
-
 // Starting server
 const server = app.listen(process.env.PORT || 3000, () => {
   console.log(

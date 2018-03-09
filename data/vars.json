@@ -3,10 +3,7 @@
   "privateColor": "#212121",
   "jam3Color": "#673AB7",
   "errorColor": "#f44336",
-  "location": "Ocean (3rd Room Couch & TV)",
-  "time": "6:30 - 9:00pm",
-  "suggestion": "Type `/movie` to check out the upcoming movie",
-  "warning":
-    ":x: You're doing it wrong either type `/movie` , `/movie previous` , `/movie future` or `/movie <search term>`",
+  "suggestion": "Type `/movie <search term>` to search for a movie",
+  "warning": ":x: You're doing it wrong either type `/movie` , `/movie popular` or `/movie <search term>`",
   "movieWarning": "!Movie not found :("
 }
