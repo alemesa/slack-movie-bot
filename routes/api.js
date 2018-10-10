@@ -4,20 +4,17 @@ const fetch = require('node-fetch');
 const request = require('request');
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
-// date handling
-const fs = require('fs');
-const moment = require('moment');
+
 // secret
-const CLIENT_ID = '265433400768.269305280000';
-const CLIENT_SECRET = '0ddef22b6dcbc4ac8a5f85d7de70489b';
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = 'https://slack-movie-bot-jam3.herokuapp.com/auth/redirect';
-const VERIFICATION_TOKEN = '';
 
 // API stuff
-const apiKey = '0ceedd539b0a1efa834d0c7318eb6355';
+const apiKey = process.env.API_KEY;
 
 // Format Public Search Data
-function formatSearchPublicData(movie, search) {
+function formatSearchPublicData(movie) {
   let production_countries = '';
   let production_company = movie.production_companies[0] ? movie.production_companies[0].name : '';
   let genres = '';
@@ -32,9 +29,9 @@ function formatSearchPublicData(movie, search) {
   let message = {
     response_type: 'in_channel',
     replace_original: false,
-    text: `\t${movie.release_date ? `📽️ Date: ${movie.release_date} |` : ''} ${
-      movie.original_language ? `Lang: ${movie.original_language.toUpperCase()} |` : ''
-    }  ${movie.runtime ? `Runtime: ${movie.runtime} mins ` : ''} ${production_company ? `| ${production_company}` : ''}`,
+    text: `\t${movie.release_date ? `📽️ Date: ${movie.release_date} |` : ''} ${movie.original_language ? `Lang: ${movie.original_language.toUpperCase()} |` : ''}  ${
+      movie.runtime ? `Runtime: ${movie.runtime} mins ` : ''
+    } ${production_company ? `| ${production_company}` : ''}`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -44,9 +41,7 @@ function formatSearchPublicData(movie, search) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline ? `${movie.tagline} | ` : ''}${production_countries ? `${production_countries}` : ''}${
-          genres ? ` | ${genres}` : ''
-        }\n${movie.overview}`,
+        text: `${movie.tagline ? `${movie.tagline} | ` : ''}${production_countries ? `${production_countries}` : ''}${genres ? ` | ${genres}` : ''}\n${movie.overview}`,
         actions: []
       }
     ]
@@ -71,9 +66,9 @@ function formatSearchData(movie, search) {
   let message = {
     response_type: 'ephemeral',
     replace_original: true,
-    text: `\t${movie.release_date ? `📽️ Date: ${movie.release_date} |` : ''} ${
-      movie.original_language ? `Lang: ${movie.original_language.toUpperCase()} |` : ''
-    }  ${movie.runtime ? `Runtime: ${movie.runtime} mins ` : ''} ${production_company ? `| ${production_company}` : ''}`,
+    text: `\t${movie.release_date ? `📽️ Date: ${movie.release_date} |` : ''} ${movie.original_language ? `Lang: ${movie.original_language.toUpperCase()} |` : ''}  ${
+      movie.runtime ? `Runtime: ${movie.runtime} mins ` : ''
+    } ${production_company ? `| ${production_company}` : ''}`,
     attachments: [
       {
         fallback: 'Unable to search that movie',
@@ -83,9 +78,7 @@ function formatSearchData(movie, search) {
         attachment_type: 'default',
         title: `${movie.title}`,
         title_link: `http://www.imdb.com/title/${movie.imdb_id}/?ref_=nv_sr_1`,
-        text: `${movie.tagline ? `${movie.tagline} | ` : ''}${production_countries ? `${production_countries}` : ''}${
-          genres ? ` | ${genres}` : ''
-        }\n${movie.overview}`,
+        text: `${movie.tagline ? `${movie.tagline} | ` : ''}${production_countries ? `${production_countries}` : ''}${genres ? ` | ${genres}` : ''}\n${movie.overview}`,
         actions: [
           {
             name: 'post',
@@ -164,9 +157,7 @@ function showErrorMessage() {
 
 function formatPopularData(data) {
   let outputText = '';
-  data
-    .filter((movie, index) => index < 10)
-    .map((movie, index) => (outputText += `${index + 1} -  ${movie.original_title} 🎞️  |  ${movie.release_date} 📆\n`));
+  data.filter((movie, index) => index < 10).map((movie, index) => (outputText += `${index + 1} -  ${movie.original_title} 🎞️  |  ${movie.release_date} 📆\n`));
 
   let message = {
     response_type: 'ephemeral',
@@ -208,14 +199,6 @@ function getMovie(movie, popular = true) {
       let errorMessage = showErrorMessage();
       return errorMessage;
     });
-}
-
-function displayError() {
-  let message = {
-    response_type: 'ephemeral',
-    text: `${variables.warning}`
-  };
-  return message;
 }
 
 // Return the movies as json (REST-API)
@@ -281,15 +264,7 @@ router.get('/auth', (req, res) => {
 router.get('/auth/redirect', (req, res) => {
   console.log('Going to /Auth/Redirect');
   var options = {
-    uri:
-      'https://slack.com/api/oauth.access?code=' +
-      req.query.code +
-      '&client_id=' +
-      CLIENT_ID +
-      '&client_secret=' +
-      CLIENT_SECRET +
-      '&redirect_uri=' +
-      REDIRECT_URI,
+    uri: 'https://slack.com/api/oauth.access?code=' + req.query.code + '&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '&redirect_uri=' + REDIRECT_URI,
     method: 'GET'
   };
   request(options, (error, response, body) => {
